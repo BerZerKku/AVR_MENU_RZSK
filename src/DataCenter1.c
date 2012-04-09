@@ -86,7 +86,7 @@ void ErrorMessage1(char code)
 void DataModBus1(unsigned char NumberByte)
 {
 
-      if (GetSostPort1()&HardError)  //если произошла ошибка приема
+      if (GetSostPort1() & HardError)  //если произошла ошибка приема
         {
           Tr_buf_data_uart1[4]=0;
           Tr_buf_data_uart1[5]=0;

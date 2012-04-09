@@ -3,9 +3,6 @@
 //сброс регистра ошибок
 void ClearPortError(void);
 
-//опрос состояния UART
-char GetSostPort(void);
-
 //запустить передачу из буфера
 void StartTrans(char SizeMessage);
 

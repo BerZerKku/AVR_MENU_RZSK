@@ -224,17 +224,6 @@ void StartTrans(char SizeMessage)
   GoTrans;
 }
 
-//опрос состояния порта UART
-char GetSostPort(void)
-{
-  char temp;
-
-  temp=Sost; //прочитать регистр ошибок
-  if (TestReceive) temp|=EnRead;  //разрешение приема
-  if (TestTrans) temp|=EnWrite;   //разрешение передачи
-  return(temp);
-}
-
 //сброс состояния UART
 void ClearPortError(void)
 {

@@ -1,13 +1,15 @@
-#include "ioavr.h"
-#include "ina90.h"
+#include <ioavr.h>
+#include <ina90.h>
+#include "MyDef.h"
 #include "StartSetup.h"
 #include "InterfaceS.h"
-#include "MyDef.h"
 #include "DataCenter.h"
 #include "DataCenter1.h"
 #include "driverLCD.h"
 #include "WatchDog.h"
 #include "Flash.h"
+#include "Menu.h"
+
 //определяет цикл работы программы
 #define LoopUARTtime 10
 
@@ -807,441 +809,723 @@ void fCharToTimeOff(unsigned char byte)
 }
 
 //обработка нажатия кнопки
-void FuncPressKey(void)
+static void FuncPressKey(void)
 {
-	switch(PressKey){
-	case '1':{
-		switch(MenuLevel){
-		case 2: {LCDbufClear();LCD2new=1;MenuLevel=4;ShiftMenu=0;MaxShiftMenu=1;MaxDisplayLine=3;} break;
-		case 3:{  //ввод Даты
-			WorkRate=0x03;ChangeMass=DataLCD;InputParameter=1;Discret=1;  //дискрет 1
-			for (char i = 0; i <= 8; i++) 
-				InputDataTime[i] = DataLCD[i];
-		}break;
-		case 4: PressInMenuJournal('1'); break;  // журнал\журнал событий
-		case 5: {LCDbufClear();LCD2new=1;MenuLevel=11;ShiftMenu=0;MaxShiftMenu=0;MaxDisplayLine=1;} break;  //переход в меню Режим
-		case 6:
-		case 12: // переход в установить\параметры\пост
+	
+	if (MenuLevel == LVL_START)
+	{
+		switch(PressKey)
+		{
+			case 'M':
 			{
 				LCDbufClear();
+				MenuLevel = LVL_MENU;
 				LCD2new = 1;
-				MenuLevel += 1;
+				LCDtimerNew = 1;
 				ShiftMenu = 0;
-				MaxShiftMenu = 6;
-				MaxDisplayLine = 1; 
-				ValueVsRange = false;
-			} 
-			break;  
-		}
-	}break;
-	case '2':{
-		switch(MenuLevel){
-		case 1:{  //прокрутка измеряемых параметров
-			if (NumberAskMeasuring>1) NumberAskMeasuring--; else NumberAskMeasuring = 6;
-			eNumberAskMeasuring[0]=NumberAskMeasuring;eWrite=1;eAddressWrite=5;eMassiveWrite=eNumberAskMeasuring;
-		}break;
-		case 2: {LCDbufClear();LCD2new=1;MenuLevel=3;} break;//заходим в пункт "Ввод дата/время"
-		case 3:{  // ввод Времени
-			WorkRate = 0x03;
-			ChangeMass = TimeLCD;
-			InputParameter = 2;Discret = 1;  //дискрет 1
-			for (char i = 0; i <= 8; i++) 
-				InputDataTime[i] = TimeLCD[i];
-		}break;
-		case 4: PressInMenuJournal('2'); break;  // журнал\журнал 1-е устро-во
-		case 5:
-		{ //  Установить\Параметры
-			LCDbufClear();
-			LCD2new=1;
-			MenuLevel=12;
-			ShiftMenu=0;
-			MaxShiftMenu=1;
-			MaxDisplayLine=3;
-		}break;
-		case 6:	//усстановить\параметры\приемника
-		case 12:	//просмотр парам\приемник	
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;	
+			}break;
+			
+			case '2':
 			{
-				LCDbufClear();LCD2new=1;ShiftMenu=0;MaxDisplayLine=1;NumberCom=1;
-				MaxShiftMenu = defNumParamPrm - 1;
-				MenuLevel += 2;	// 8 and 14
-			}
-			break;
-		}
-	}break;
-	case '3':{
-		switch(MenuLevel){
-		case 2:{  //вход в меню "Установить", если пароль еще не введен, то будет опрашиваться пароль
-			LCD2new=1;LCDbufClear();MenuLevel=5;ShiftMenu=0;MaxDisplayLine=3;
-			MaxShiftMenu=1;
-			if ((cNumComR>0)&&(CurrentState[2]<0x04)) MaxShiftMenu=0;   //если есть приемник, и он не в Тест1
-			if ((cNumComT>0)&&(CurrentState[4]<0x04)) MaxShiftMenu=0;  //если есть передатчик, и он не в Тест1
-			if ((bDef)&&(CurrentState[0]<0x04)) MaxShiftMenu=0;
-		}break;
-		case 4: PressInMenuJournal('3'); break;  // журнал\журнал 2-е устро-во
-		case 5:{ //ВВод нового пароля
-			if (PressPassword==2){
-                WorkRate=0x01;MaxNumberInputChar=4;ChangeMass=ePassword;ByteShift=0;MaxValue=0;MinValue=0;Discret=1;
-			}else
-                if (PressPassword==1){
-					WorkRate=0x01;MaxNumberInputChar=4;ChangeMass=ePassword;ByteShift=0;MaxValue=0;MinValue=0; Discret=1; //дискрет 1
-                }
-		}break;
-		case 6:	//усстановить\параметры\передатчика
-		case 12:	//просмотр парам\передатчика	
-			{
-				LCDbufClear();LCD2new=1;ShiftMenu=0;MaxDisplayLine=1;NumberCom=1;
-				MaxShiftMenu = defNumParamPrd - 1;
-				MenuLevel += 3;	// 9 and 15
-			}
-			break;
-		}
-	}break;
-	case '4':
-	{
-		switch(MenuLevel)
-		{
-			case 1: 	//переключение отображения в начальном меню даты/времени
+				(NumberAskMeasuring > 1) ? NumberAskMeasuring-- : NumberAskMeasuring = 6;
+				eNumberAskMeasuring[0] = NumberAskMeasuring;
+				eWrite = 1;
+				eAddressWrite = 5;
+				eMassiveWrite = eNumberAskMeasuring;
+			}break;
+			
+			case '4':	
+			case '6':		// Переключение отображения даты/времени
 			LCDtimer = (LCDtimer == 1) ? 2 : 1;
 			break; 
 			
-			case 2:		// переход в Просмотр параметров
+			case '8':		// Прокрутка измеряемых параметров
 			{  
+				(NumberAskMeasuring < 6) ? NumberAskMeasuring++ : NumberAskMeasuring=0;
+				eNumberAskMeasuring[0] = NumberAskMeasuring;
+				eWrite = 1;
+				eAddressWrite = 5;
+				eMassiveWrite = eNumberAskMeasuring;
+			}
+			break;
+			
+			case '#':		// Сброс индикации команд
+			DopComTrans = 2;
+			break;
+			
+			case 'E':		// Перевод приемника из режима Готов в Введен
+			DopComTrans=1; 
+			break;
+		}
+	}
+	else if (MenuLevel == LVL_MENU)
+	{
+		switch(PressKey)
+		{
+			case 'M':
+			case 'C':		// Возврат в начальное меню
+			{
 				LCDbufClear();
-				LCD2new=1;
-				MenuLevel=6;
-				ShiftMenu=0;
-				MaxShiftMenu=1;
-				MaxDisplayLine=3;
+				LCDtimerNew = 1;
+				MenuLevel = LVL_START;
+				ShiftMenu = 0;
+				MaxDisplayLine = 0;
+				MaxShiftMenu = 1;
 			}break;
 			
-			case 4: 	// журнал\журнал 3-е устро-во
-			PressInMenuJournal('4'); 
-			break;  
+			case 'U':		// Листание списка вверх
+			{
+				if (ShiftMenu > 0) 
+				{
+					LCDbufClear(); 
+					ShiftMenu--; 
+					LCD2new = 1; 				
+					NumberCom = 1;
+				}
+			}break;
 			
-			case 5: 	//переход в меню тестов
-            {
+			case 'D':		// Листание списка вниз
+			{
+				if (ShiftMenu < MaxShiftMenu) 
+				{
+					LCDbufClear();
+					ShiftMenu++; 
+					LCD2new = 1; 
+					NumberCom = 1;
+				}
+			}break;
+			
+			case '1':		// Переход в пункт Журнал
+			{
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_JRN;
+				ShiftMenu = 0;
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;
+			}break;
+			
+			case '2':		// Переход в пункт "Дата/время"
+			{
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_DATA_TIME;
+			}break;
+			
+			case '3':
+			{
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_UPR;
+				ShiftMenu = 0;
+				MaxShiftMenu = 0;
+				MaxDisplayLine = 3;
+			}break;
+			
+			case '4':		// Переход в пункт "Установить"
+			{
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_SETUP;
+				ShiftMenu = 0;
+				MaxDisplayLine = 3;
+				MaxShiftMenu=1;
+				if ( (cNumComR > 0) && (CurrentState[2] < 0x04) )				//если есть приемник, и он не в Тест1 
+					MaxShiftMenu=0;   	
+				if ( (cNumComT > 0)&&(CurrentState[4] < 0x04) ) 				//если есть передатчик, и он не в Тест1
+					MaxShiftMenu=0;  	
+				if ( (bDef) && (CurrentState[0] < 0x04) ) 						// если есть защита, и не в Тест1
+					MaxShiftMenu=0;			
+			}break;
+			
+			case '5':		// Переход в "Просмотр параметров"
+			{  
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_VIEW_PARAM;
+				ShiftMenu = 0;
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;
+			}break;
+			
+			case '6':		// Переход в "Информация"
+			{
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_INFO;
+				ShiftMenu = 0;
+				MaxShiftMenu = 4;
+				MaxDisplayLine = 1;
+				
+			}break;
+		}
+	}
+	else if (MenuLevel == LVL_DATA_TIME)
+	{
+		switch(PressKey)
+		{
+			case 'M':		// Возврат в начальное меню
+			{
+				LCDbufClear();
+				LCDtimerNew = 1;
+				MenuLevel = LVL_START;
+				ShiftMenu = 0;
+				MaxDisplayLine = 0;
+				MaxShiftMenu = 1;
+			}break;
+			
+			case 'C':		// Переход на уровень выше
+			{
+				LCDbufClear();
+				MenuLevel = LVL_MENU;
+				LCD2new = 1;
+				ShiftMenu = 0;
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;
+			}break;
+			
+			case '1':		// Ввод даты
+			{
+				WorkRate = 0x03;
+				ChangeMass = DataLCD;
+				InputParameter = 1;
+				Discret = 1;  
+				for (char i = 0; i <= 8; i++) 
+					InputDataTime[i] = DataLCD[i];
+			}break;
+			
+			case '2':		// Ввод времени
+			{  
+				WorkRate = 0x03;
+				ChangeMass = TimeLCD;
+				InputParameter = 2;
+				Discret = 1;  
+				for (char i = 0; i <= 8; i++) 
+					InputDataTime[i] = TimeLCD[i];
+			}break;
+		}
+	}
+	else if (MenuLevel == LVL_JRN)
+	{
+		switch(PressKey)
+		{
+			case 'M':		// Возврат в начальное меню
+			{
+				LCDbufClear();
+				LCDtimerNew = 1;
+				MenuLevel = 1;
+				ShiftMenu = 0;
+				MaxDisplayLine = 0;
+				MaxShiftMenu = 1;
+			}break;
+			
+			case 'C':		// Переход на уровень выше
+			{
+				LCDbufClear();
+				MenuLevel = LVL_MENU;
+				LCD2new = 1;
+				ShiftMenu = 0;
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;
+			}break;
+			
+			case 'U':		// Листание списка вверх
+			{
+				if (ShiftMenu > 0) 
+				{
+					LCDbufClear(); 
+					ShiftMenu--; 
+					LCD2new = 1; 				
+					NumberCom = 1;
+				}
+			}break;
+			
+			case 'D':		// Листание списка вниз
+			{
+				if (ShiftMenu < MaxShiftMenu) 
+				{
+					LCDbufClear();
+					ShiftMenu++; 
+					LCD2new = 1; 
+					NumberCom = 1;
+				}
+			}break;
+			
+			case '1':		// переход в подпункты журнала
+			case '2':
+			case '3':
+			case '4':
+			PressInMenuJournal('1');  
+			break;
+		}
+	}
+	else if (MenuLevel == LVL_SETUP)
+	{
+		switch(PressKey)
+		{
+			case 'M':		// Возврат в начальное меню
+			{
+				LCDbufClear();
+				LCDtimerNew = 1;
+				MenuLevel = 1;
+				ShiftMenu = 0;
+				MaxDisplayLine = 0;
+				MaxShiftMenu = 1;
+			}break;
+			
+			case 'C':		// Переход на уровень выше
+			{
+				LCDbufClear();
+				MenuLevel = LVL_MENU;
+				LCD2new = 1;
+				ShiftMenu = 0;
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;
+			}break;
+			
+			case 'U':		// Листание списка вверх
+			{
+				if (ShiftMenu > 0) 
+				{
+					LCDbufClear(); 
+					ShiftMenu--; 
+					LCD2new = 1; 				
+					NumberCom = 1;
+				}
+			}break;
+			
+			case 'D':		// Листание списка вниз
+			{
+				if (ShiftMenu < MaxShiftMenu) 
+				{
+					LCDbufClear();
+					ShiftMenu++; 
+					LCD2new = 1; 
+					NumberCom = 1;
+				}
+			}break;
+			
+			case '1':		// Переход в пункт "Меню / Установить / Режим"
+			{
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_SETUP_RGM;
+				ShiftMenu = 0;
+				MaxShiftMenu = 0;
+				MaxDisplayLine = 1;
+			}break;  
+						
+			case '2':		// Переход в пункт "Меню / Установить / Параметры"
+			{
+				LCDbufClear();
+				LCD2new = 1;
+				MenuLevel = LVL_SETUP_PARAM;
+				ShiftMenu = 0;
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;
+			}break;
+			
+			case '3':		// Переход в пункт "Меню / Установить / Пароль"
+			{
+				if (PressPassword == 2)
+				{
+					WorkRate = 0x01;
+					MaxNumberInputChar = 4;
+					ChangeMass = ePassword;
+					ByteShift = 0;
+					MaxValue = 0;
+					MinValue = 0;
+					Discret = 1;
+				}
+				else if (PressPassword == 1)
+				{
+					WorkRate = 0x01;
+					MaxNumberInputChar = 4;
+					ChangeMass = ePassword;
+					ByteShift = 0;
+					MaxValue = 0;
+					MinValue = 0; 
+					Discret = 1; 
+				}
+			}break;
+			
+			case '4': 		// Переход в пункт "Меню / Установить / Тест"
+			{
 				if (CurrentState[2]<0x04) break;   //если есть приемник, и он не в Тест
 				if (CurrentState[4]<0x04) break;  //если есть передатчик, и он не в Тест
 				if (CurrentState[0]<0x04) break;  //если есть Защита, и она не в Тест
 				
 				LCDbufClear();
-				LCD2new=1; 
-				MenuLevel=20; 
-				ShiftMenu=0;
-				MaxDisplayLine=3;
-				MaxShiftMenu=1;
-            }break;
-			
-			case 6:
-			case 12:	//переход в Просмотр параметров(установить\параметры)\общие
-			{ 
+				LCD2new = 1; 
+				MenuLevel = LVL_TEST; 
+				ShiftMenu = 0;
+				MaxDisplayLine = 3;
+				MaxShiftMenu = 1;
+			}break;
+		}
+	}
+	else if (MenuLevel == LVL_UPR)
+	{
+		switch(PressKey)
+		{
+			case 'M':		// Возврат в начальное меню
+			{
 				LCDbufClear();
-				LCD2new=1;
-				ShiftMenu=0;
-				MaxDisplayLine=1;
-				MenuLevel += 4;
-				MaxShiftMenu = defNumParamAll -1;
+				LCDtimerNew = 1;
+				MenuLevel = 1;
+				ShiftMenu = 0;
+				MaxDisplayLine = 0;
+				MaxShiftMenu = 1;
 			}break;
 			
-			case 8:	
-			case 14:	// .*утсановить\параметры\применик
+			case 'C':		// Переход на уровень выше
 			{
-				if (ShiftMenu == 1)
-				{
-					NumberCom = (NumberCom > 1) ? NumberCom - 1 : 4;
-				}
-			}
-			break;
-		}
-	}break;
-	case '5':
-		{
-			if (MenuLevel == 2) 
-			{
-				MenuLevel = 19;
 				LCDbufClear();
-				ShiftMenu = 0;
-				MaxShiftMenu = 4;
-				MaxDisplayLine = 1;
+				MenuLevel = LVL_MENU;
 				LCD2new = 1;
-			}
-		}break;
-	case '6':{
-		switch(MenuLevel)
+				ShiftMenu = 0;
+				MaxShiftMenu = 1;
+				MaxDisplayLine = 3;
+			}break;
+		}
+	}
+	else
+	{
+		switch(PressKey)
 		{
-			case 1: 	//переключение отображения в начальном меню даты/времени
-			LCDtimer = (LCDtimer == 1) ? 2 : 1;
-			break; 
-			
-			case 8:	
-			case 14:	// *установить\параметры\применик
+			case '1':
 			{
-				if (ShiftMenu == 1)
-				{
-					NumberCom = (NumberCom < 4) ? NumberCom + 1 : 1;
+				switch(MenuLevel){
+					case 6:
+					case 12: // переход в установить\параметры\пост
+					{
+						LCDbufClear();
+						LCD2new = 1;
+						MenuLevel += 1;
+						ShiftMenu = 0;
+						MaxShiftMenu = 6;
+						MaxDisplayLine = 1; 
+						ValueVsRange = false;
+					} 
+					break;  
 				}
-			}
-			break;
-		}
-	}break;
-	case '8':{
-		if (MenuLevel==1){  //прокрутка измеряемых параметров
-			if (NumberAskMeasuring < 6) NumberAskMeasuring++; else NumberAskMeasuring=0;
-			eNumberAskMeasuring[0]=NumberAskMeasuring;eWrite=1;eAddressWrite=5;eMassiveWrite=eNumberAskMeasuring;
-		}
-	}break;
-	case 'M':{
-		if (MenuLevel==1) {LCDbufClear();MenuLevel=2;LCD2new=1;LCDtimerNew=1;ShiftMenu=0;MaxShiftMenu=1;MaxDisplayLine=3;} //заходим на второй уровень
-		else {//иначе с любого уровня прыгаем на начальное меню
-            LCDbufClear();LCDtimerNew=1;MenuLevel=1;ShiftMenu=0;MaxDisplayLine=0;ValueVsRange=0;NumberCom=1;
-            MaxShiftMenu=1;
-		}
-	}break;
-	case 'C':{
-		switch (MenuLevel){
-		case 2: { //возврат в начальное меню
-			LCDbufClear();LCDtimerNew=1;MenuLevel=1;ShiftMenu=0;MaxDisplayLine=0;
-			MaxShiftMenu=1;
-		}break;
-		case 3:
-		case 4:
-		case 5:
-		case 6:
-		case 19: {LCDbufClear();MenuLevel=2;LCD2new=1;ShiftMenu=0;MaxShiftMenu=1;MaxDisplayLine=3;} break;  //возврат в меню 2-ого уровня
-		case 7:
-		case 8:
-		case 9:
-		case 10:{ //возврат в Просмотр параметров
-			LCDbufClear();MenuLevel=6;LCD2new=1;ShiftMenu=0;NumberCom=1;MaxShiftMenu=1;MaxDisplayLine=3;
-		}break;
-		case 20:
-		case 11:
-		case 12:  {LCDbufClear();MenuLevel=5;LCD2new=1;ShiftMenu=0; MaxDisplayLine=3;
-		MaxShiftMenu=1;
-		if (CurrentState[2]<0x04) MaxShiftMenu=0;   //если есть приемник, и он не в Тест1
-		if (CurrentState[4]<0x04) MaxShiftMenu=0;  //если есть передатчик, и он не в Тест1
-		if (CurrentState[0]<0x04) MaxShiftMenu=0;
-		} break; //Возврат в Установить
-		case 13:
-		case 14:
-		case 15:
-		case 16:{ //Возврат в Устанновить\Параметры
-			LCDbufClear();LCD2new=1;MenuLevel=12;ShiftMenu=0;ValueVsRange=0;NumberCom=1;MaxShiftMenu=1;MaxDisplayLine=3;ValueVsRange=false;
-		}break;
-		case 21: Menu_Journal(); break; //возврат в меню Журнал
-		}
-	}break;
-	case 'U':{
-		switch(MenuLevel){
-		case 13:
-		case 16:  ValueVsRange=0;
-		
-		case 2:
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 8:
-		case 9:
-		case 10:
-		case 12:
-		case 14:
-		case 15:
-		case 19:
-		case 20:{
-			if (ShiftMenu>0) {ShiftMenu--; LCD2new=1; LCDbufClear(); NumberCom=1;}
-		} break; //прокрутка меню
-		case 21:{
-			if (sArchive.RecCount>1){
-                if (ShiftMenu>0) ShiftMenu--;
-                else ShiftMenu=sArchive.RecCount-1;
-                sArchive.Data[12]=0;
-                FuncClearCharLCD(2,1,40); //очистка инф-ы
-                FuncClearCharLCD(4,13,8); //очистка даты записи
-			}
-		}break;
-		
-		}
-	}break;
-	case 'D':{
-		switch(MenuLevel){
-		case 13:
-		case 16: ValueVsRange =0;
-		
-		case 2:
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 8:
-		case 9:
-		case 10:
-		case 12:
-		case 14:
-		case 15:
-		case 19:
-		case 20:{
-			if (ShiftMenu<MaxShiftMenu) {ShiftMenu++; LCD2new=1; LCDbufClear(); NumberCom=1;}
-		} break; //прокрутка меню
-		case 21:{
-			if (sArchive.RecCount>1){
-                if (ShiftMenu<(sArchive.RecCount-1)) ShiftMenu++;
-                else ShiftMenu=0;
-                sArchive.Data[12]=0;
-                FuncClearCharLCD(2,1,40); //очистка инф-ы
-                FuncClearCharLCD(4,13,8); //очистка даты записи
-			}
-		}break;
-		}
-	}break;
-	case '#':{
-		if (MenuLevel==1) DopComTrans=2;
-		if ((MenuLevel>12)&&(MenuLevel<17)) {ValueVsRange++; if (ValueVsRange>1) ValueVsRange=0; LCD2new=1;}
-	} break;
-	case 'E':
-		{
-			switch(MenuLevel)
+			}break;
+			case '2':
 			{
-			case 1: DopComTrans=1; break; //"Пуск" приемника
-			case 11:
-				{  //ввод режимов работы
-					if ( (PressPassword == 2) && (EntPass == 0) )
+				switch(MenuLevel)
+				{
+					case 6:	//усстановить\параметры\приемника
+					case 12:	//просмотр парам\приемник	
 					{
-						WorkRate=0x01;MaxNumberInputChar=4;ChangeMass=ePassword;
-						ByteShift=0;MaxValue=0;MinValue=0;Discret=1;EntPass=1;
+						LCDbufClear();LCD2new=1;ShiftMenu=0;MaxDisplayLine=1;NumberCom=1;
+						MaxShiftMenu = defNumParamPrm - 1;
+						MenuLevel += 2;	// 8 and 14
 					}
-					else
+					break;
+				}
+			}break;
+			case '3':
+			{
+				switch(MenuLevel){
+					case 6:	//усстановить\параметры\передатчика
+					case 12:	//просмотр парам\передатчика	
 					{
-						if (PressPassword == 1)
+						LCDbufClear();LCD2new=1;ShiftMenu=0;MaxDisplayLine=1;NumberCom=1;
+						MaxShiftMenu = defNumParamPrd - 1;
+						MenuLevel += 3;	// 9 and 15
+					}
+					break;
+				}
+			}break;
+			case '4':
+			{
+				switch(MenuLevel)
+				{	
+					case 6:
+					case 12:	//переход в Просмотр параметров(установить\параметры)\общие
+					{ 
+						LCDbufClear();
+						LCD2new=1;
+						ShiftMenu=0;
+						MaxDisplayLine=1;
+						MenuLevel += 4;
+						MaxShiftMenu = defNumParamAll -1;
+					}break;
+					
+					case 8:	
+					case 14:	// .*утсановить\параметры\применик
+					{
+						if (ShiftMenu == 1)
 						{
-							bInpVal=false;
-							if ((CurrentState[0]==2)||(CurrentState[0]==0x4E)) bInpVal=true;
-							if ((CurrentState[2]==2)||(CurrentState[2]==1)||(CurrentState[2]==0x4E)) bInpVal=true;
-							if ((CurrentState[4]==2)||(CurrentState[4]==0x4E)) bInpVal=true;
-							WorkRate=2;SelectValue=1;InputSelectValue=0;MinSelectValue=0;PressPassword=2;
-							if (bInpVal)
-							{
-								MaxSelectValue=1;MassSelectValue=Menu1regimeInp;
-							}
-							else
-							{
-								MaxSelectValue=3;MassSelectValue=Menu1regimeInp2;
-							}
-							EntPass=0;
+							NumberCom = (NumberCom > 1) ? NumberCom - 1 : 4;
+						}
+					}
+					break;
+				}
+			}break;
+			case '6':
+			{
+				switch(MenuLevel)
+				{
+					case 8:	
+					case 14:	// *установить\параметры\применик
+					{
+						if (ShiftMenu == 1)
+						{
+							NumberCom = (NumberCom < 4) ? NumberCom + 1 : 1;
+						}
+					}
+					break;
+				}
+			}break;
+			case 'M':
+			{
+				LCDbufClear();
+				LCDtimerNew = 1;
+				MenuLevel = 1;
+				ShiftMenu = 0;
+				MaxDisplayLine = 0;
+				MaxShiftMenu = 1;
+			}break;
+			case 'C':
+			{
+				switch (MenuLevel){
+					case 6:
+					case 19: {LCDbufClear();MenuLevel=2;LCD2new=1;ShiftMenu=0;MaxShiftMenu=1;MaxDisplayLine=3;} break;  //возврат в меню 2-ого уровня
+					case 7:
+					case 8:
+					case 9:
+					case 10:{ //возврат в Просмотр параметров
+						LCDbufClear();MenuLevel=6;LCD2new=1;ShiftMenu=0;NumberCom=1;MaxShiftMenu=1;MaxDisplayLine=3;
+					}break;
+					case 20:
+					case 11:
+					case 12:  {LCDbufClear();MenuLevel=5;LCD2new=1;ShiftMenu=0; MaxDisplayLine=3;
+					MaxShiftMenu=1;
+					if (CurrentState[2]<0x04) MaxShiftMenu=0;   //если есть приемник, и он не в Тест1
+					if (CurrentState[4]<0x04) MaxShiftMenu=0;  //если есть передатчик, и он не в Тест1
+					if (CurrentState[0]<0x04) MaxShiftMenu=0;
+					} break; //Возврат в Установить
+					case 13:
+					case 14:
+					case 15:
+					case 16:{ //Возврат в Устанновить\Параметры
+						LCDbufClear();LCD2new=1;MenuLevel=12;ShiftMenu=0;ValueVsRange=0;NumberCom=1;MaxShiftMenu=1;MaxDisplayLine=3;ValueVsRange=false;
+					}break;
+					case 21: Menu_Journal(); break; //возврат в меню Журнал
+				}
+			}break;
+			case 'U':
+			{
+				switch(MenuLevel){
+					case 13:
+					case 16:  ValueVsRange=0;
+					
+					case 6:
+					case 7:
+					case 8:
+					case 9:
+					case 10:
+					case 12:
+					case 14:
+					case 15:
+					case 19:
+					case 20:{
+						if (ShiftMenu>0) {ShiftMenu--; LCD2new=1; LCDbufClear(); NumberCom=1;}
+					} break; //прокрутка меню
+					case 21:{
+						if (sArchive.RecCount>1){
+							if (ShiftMenu>0) ShiftMenu--;
+							else ShiftMenu=sArchive.RecCount-1;
+							sArchive.Data[12]=0;
+							FuncClearCharLCD(2,1,40); //очистка инф-ы
+							FuncClearCharLCD(4,13,8); //очистка даты записи
+						}
+					}break;
+					
+				}
+			}break;
+			case 'D':
+			{
+				switch(MenuLevel){
+					case 13:
+					case 16: ValueVsRange =0;
+					
+					case 6:
+					case 7:
+					case 8:
+					case 9:
+					case 10:
+					case 12:
+					case 14:
+					case 15:
+					case 19:
+					case 20:{
+						if (ShiftMenu<MaxShiftMenu) {ShiftMenu++; LCD2new=1; LCDbufClear(); NumberCom=1;}
+					} break; //прокрутка меню
+					case 21:{
+						if (sArchive.RecCount>1){
+							if (ShiftMenu<(sArchive.RecCount-1)) ShiftMenu++;
+							else ShiftMenu=0;
+							sArchive.Data[12]=0;
+							FuncClearCharLCD(2,1,40); //очистка инф-ы
+							FuncClearCharLCD(4,13,8); //очистка даты записи
+						}
+					}break;
+				}
+			}break;
+			case '#':
+			{
+				if ((MenuLevel>12)&&(MenuLevel<17)) {ValueVsRange++; if (ValueVsRange>1) ValueVsRange=0; LCD2new=1;}
+			} break;
+			case 'E':
+			{
+				switch(MenuLevel)
+				{
+					case 11:
+					{  //ввод режимов работы
+						if ( (PressPassword == 2) && (EntPass == 0) )
+						{
+							WorkRate=0x01;MaxNumberInputChar=4;ChangeMass=ePassword;
+							ByteShift=0;MaxValue=0;MinValue=0;Discret=1;EntPass=1;
 						}
 						else
 						{
-							bInpVal=false;
-							if ((CurrentState[0]!=2)&&(CurrentState[0]!=0x4E)) bInpVal=true;
-							if ((CurrentState[2]!=2)&&(CurrentState[2]!=1)&&(CurrentState[2]!=0x4E)) bInpVal=true;
-							if ((CurrentState[4]!=2)&&(CurrentState[4]!=0x4E)) bInpVal=true;
-							
-							if (bInpVal){
-								WorkRate=2;
-								SelectValue=2;
-								InputSelectValue=0;
-								MinSelectValue=0;
-								MassSelectValue=Menu1regimeInp1;
-								PressPassword=2;
-								MaxSelectValue=2;
+							if (PressPassword == 1)
+							{
+								bInpVal=false;
+								if ((CurrentState[0]==2)||(CurrentState[0]==0x4E)) bInpVal=true;
+								if ((CurrentState[2]==2)||(CurrentState[2]==1)||(CurrentState[2]==0x4E)) bInpVal=true;
+								if ((CurrentState[4]==2)||(CurrentState[4]==0x4E)) bInpVal=true;
+								WorkRate=2;SelectValue=1;InputSelectValue=0;MinSelectValue=0;PressPassword=2;
+								if (bInpVal)
+								{
+									MaxSelectValue=1;MassSelectValue=Menu1regimeInp;
+								}
+								else
+								{
+									MaxSelectValue=3;MassSelectValue=Menu1regimeInp2;
+								}
+								EntPass=0;
 							}
-							EntPass=0;
+							else
+							{
+								bInpVal=false;
+								if ((CurrentState[0]!=2)&&(CurrentState[0]!=0x4E)) bInpVal=true;
+								if ((CurrentState[2]!=2)&&(CurrentState[2]!=1)&&(CurrentState[2]!=0x4E)) bInpVal=true;
+								if ((CurrentState[4]!=2)&&(CurrentState[4]!=0x4E)) bInpVal=true;
+								
+								if (bInpVal){
+									WorkRate=2;
+									SelectValue=2;
+									InputSelectValue=0;
+									MinSelectValue=0;
+									MassSelectValue=Menu1regimeInp1;
+									PressPassword=2;
+									MaxSelectValue=2;
+								}
+								EntPass=0;
+							}
 						}
-					}
-				}break;
-			case 13:
-				{  	//ввод параметров в меню Установить\Параметры\Пост
-					if (CurrentState[0]==0x00){
-						switch(ShiftMenu)
-						{
-						case 0: {WorkRate=2;SelectValue=1;InputSelectValue=0;MaxSelectValue=7;MinSelectValue=0;MassSelectValue=ParamTypeDef;} break; 	
-						case 1: {WorkRate=2;SelectValue=2;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=ParamLineDef;} break; 	
-						case 2: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=99;MinValue=0;InputParameter=8;Discret=1;NumberTransCom=1;}break;
-						case 3: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=18;MinValue=0;InputParameter=9;Discret=1;NumberTransCom=1;} break;
-						case 4: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=54;MinValue=0;InputParameter=10;Discret=2;NumberTransCom=1;}break;
-						case 5: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=27;Discret=1;NumberTransCom=1;} break;
-						case 6: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=28;Discret=1;NumberTransCom=1;} break;
+					}break;
+					case 13:
+					{  	//ввод параметров в меню Установить\Параметры\Пост
+						if (CurrentState[0]==0x00){
+							switch(ShiftMenu)
+							{
+								case 0: {WorkRate=2;SelectValue=1;InputSelectValue=0;MaxSelectValue=7;MinSelectValue=0;MassSelectValue=ParamTypeDef;} break; 	
+								case 1: {WorkRate=2;SelectValue=2;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=ParamLineDef;} break; 	
+								case 2: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=99;MinValue=0;InputParameter=8;Discret=1;NumberTransCom=1;}break;
+								case 3: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=18;MinValue=0;InputParameter=9;Discret=1;NumberTransCom=1;} break;
+								case 4: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=54;MinValue=0;InputParameter=10;Discret=2;NumberTransCom=1;}break;
+								case 5: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=27;Discret=1;NumberTransCom=1;} break;
+								case 6: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=28;Discret=1;NumberTransCom=1;} break;
+							}
 						}
-					}
-				}break;
-			case 14:	//e утсановить\параметры\приемник
-				{
-					if (CurrentState[0] == 0x00)
+					}break;
+					case 14:	//e утсановить\параметры\приемник
 					{
-						switch(ShiftMenu)
+						if (CurrentState[0] == 0x00)
 						{
-						case 0: {WorkRate=0x01;MaxNumberInputChar=2;ByteShift=0;MaxValue=10;MinValue=0;InputParameter=0x91;Discret=1;NumberTransCom=1;} break;
-						case 1: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=1000;MinValue=0;InputParameter=0x93;Discret=50;NumberTransCom=NumberCom;} break;
-						case 2: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=0;MinValue=0;InputParameter=0x94;Discret=1;NumberTransCom=1;} break;
+							switch(ShiftMenu)
+							{
+								case 0: {WorkRate=0x01;MaxNumberInputChar=2;ByteShift=0;MaxValue=10;MinValue=0;InputParameter=0x91;Discret=1;NumberTransCom=1;} break;
+								case 1: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=1000;MinValue=0;InputParameter=0x93;Discret=50;NumberTransCom=NumberCom;} break;
+								case 2: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=0;MinValue=0;InputParameter=0x94;Discret=1;NumberTransCom=1;} break;
+							}
 						}
 					}
+					break;
+					case 15:	//e утсановить\параметры\передатчик
+					{
+						if (CurrentState[0] == 0x00)
+						{
+							switch(ShiftMenu)
+							{
+								case 0: {WorkRate=0x01;MaxNumberInputChar=2;ByteShift=0;MaxValue=10;MinValue=0;InputParameter=0xA1;Discret=1;NumberTransCom=1;} break;
+								case 1: {WorkRate=0x01;MaxNumberInputChar=3;ByteShift=0;MaxValue=100;MinValue=20;InputParameter=0xA2;Discret=1;NumberTransCom=1;} break;
+								case 2: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=0;MinValue=0;InputParameter=0xA5;Discret=1;NumberTransCom=1;} break;
+								case 3: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=0;MinValue=0;InputParameter=0xA4;Discret=1;NumberTransCom=1;} break;
+							}
+						}
+					}
+					break;
+					case 16:
+					{ //меню/установить/параметры/общие
+						bInpVal=true; //разрешим изменение параметра
+						if ((bDef)&&(CurrentState[0]!=0x00)) bInpVal=false;
+						if ((cNumComR>0)&&(CurrentState[2]!=0x00)) bInpVal=false;
+						if ((cNumComT>0)&&(CurrentState[4]!=0x00)) bInpVal=false;
+						if (bInpVal){
+							switch(ShiftMenu){
+								case 0: {WorkRate=2;SelectValue=1;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=MenuAllSynchrTimerNum;} break;
+								case 1: {WorkRate=2;SelectValue=2;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=MenuAllSynchrTimerNum;} break;
+								case 2: {WorkRate=1;MaxNumberInputChar=1;ByteShift=0;MaxValue=5;MinValue=0;InputParameter=26;Discret=1;} break;
+								case 3: {WorkRate=2;SelectValue=8;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=MenuAllSynchrTimerNum;} break;
+								case 4: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=22;MinValue=0;InputParameter=5;Discret=1;} break;
+								case 5: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=22;MinValue=0;InputParameter=6;Discret=1;}break;
+								case 6: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=22;MinValue=0;InputParameter=7;Discret=1;}break;
+							}
+						}bInpVal=false;
+					}break;
+					case 19: 
+					{
+						if (ShiftMenu==4)
+						{
+							WorkRate = 2; 
+							SelectValue = 3; 
+							InputSelectValue = 0; 
+							MaxSelectValue = 1;
+							MinSelectValue = 0; 
+							MinValue = 0; 
+							MaxValue = 1; 
+							MassSelectValue = fDopParamValue;
+						}
+					}break;
+					case 20: 
+					{
+						//в тесте можно подавать сигналы только если Пост и Передатчик (или если присутствует только 1 из них) в режиме Тест
+						if (CurrentState[4]<0x04) break;
+						if (CurrentState[0]<0x04) break;
+						
+						WorkRate=2;SelectValue=ShiftMenu+1;InputSelectValue=0;
+						if (ShiftMenu==0) {MaxSelectValue = 6;MinSelectValue=0;MassSelectValue=Menu20gr1;}
+						if (ShiftMenu==1) {MaxSelectValue = 2;MinSelectValue=0;MassSelectValue=Menu20gr2;}
+					}break;
 				}
-				break;
-			case 15:	//e утсановить\параметры\передатчик
-				{
-					if (CurrentState[0] == 0x00)
-					{
-						switch(ShiftMenu)
-						{
-						case 0: {WorkRate=0x01;MaxNumberInputChar=2;ByteShift=0;MaxValue=10;MinValue=0;InputParameter=0xA1;Discret=1;NumberTransCom=1;} break;
-						case 1: {WorkRate=0x01;MaxNumberInputChar=3;ByteShift=0;MaxValue=100;MinValue=20;InputParameter=0xA2;Discret=1;NumberTransCom=1;} break;
-						case 2: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=0;MinValue=0;InputParameter=0xA5;Discret=1;NumberTransCom=1;} break;
-						case 3: {WorkRate=0x01;MaxNumberInputChar=4;ByteShift=0;MaxValue=0;MinValue=0;InputParameter=0xA4;Discret=1;NumberTransCom=1;} break;
-						}
-					}
-				}
-				break;
-			case 16:
-				{ //меню/установить/параметры/общие
-					bInpVal=true; //разрешим изменение параметра
-					if ((bDef)&&(CurrentState[0]!=0x00)) bInpVal=false;
-					if ((cNumComR>0)&&(CurrentState[2]!=0x00)) bInpVal=false;
-					if ((cNumComT>0)&&(CurrentState[4]!=0x00)) bInpVal=false;
-					if (bInpVal){
-						switch(ShiftMenu){
-						case 0: {WorkRate=2;SelectValue=1;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=MenuAllSynchrTimerNum;} break;
-						case 1: {WorkRate=2;SelectValue=2;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=MenuAllSynchrTimerNum;} break;
-						case 2: {WorkRate=1;MaxNumberInputChar=1;ByteShift=0;MaxValue=5;MinValue=0;InputParameter=26;Discret=1;} break;
-						case 3: {WorkRate=2;SelectValue=8;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=MenuAllSynchrTimerNum;} break;
-						case 4: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=22;MinValue=0;InputParameter=5;Discret=1;} break;
-						case 5: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=22;MinValue=0;InputParameter=6;Discret=1;}break;
-						case 6: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=22;MinValue=0;InputParameter=7;Discret=1;}break;
-						}
-					}bInpVal=false;
-				}break;
-			case 19: 
-				{
-					if (ShiftMenu==4)
-					{
-						WorkRate = 2; 
-						SelectValue = 3; 
-						InputSelectValue = 0; 
-						MaxSelectValue = 1;
-						MinSelectValue = 0; 
-						MinValue = 0; 
-						MaxValue = 1; 
-						MassSelectValue = fDopParamValue;
-					}
-				}break;
-			case 20: 
-				{
-					//в тесте можно подавать сигналы только если Пост и Передатчик (или если присутствует только 1 из них) в режиме Тест
-					if (CurrentState[4]<0x04) break;
-					if (CurrentState[0]<0x04) break;
-					
-					WorkRate=2;SelectValue=ShiftMenu+1;InputSelectValue=0;
-					if (ShiftMenu==0) {MaxSelectValue = 6;MinSelectValue=0;MassSelectValue=Menu20gr1;}
-					if (ShiftMenu==1) {MaxSelectValue = 2;MinSelectValue=0;MassSelectValue=Menu20gr2;}
-				}break;
-			}
-		}break;
-	default: { _NOP();};
+			}break;
+			default: { _NOP();};
+		}
 	}
+	
 	PressKey=0xF0;
 }
 
 //опрос параметров для заполнения массива ModBus
-void ModBusOpros(void){
+void ModBusOpros(void)
+{
 	PosModBusInfill++;
 	if(PosModBusInfill<0x10){ //Общие параметры
         switch(PosModBusInfill){
@@ -1361,10 +1645,13 @@ __interrupt void Timer1ovf(void)
 				{
 					if(RecivVar==0) NumberLostLetter++; //если предыдущее сообщение не было получено, добавляем 1 к потеряным посылкам
 					else {NumberLostLetter=0;RecivVar=0;} //иначе пишем в потерянные посылки 0 и обнуляем переменную полученных данных
-					if (TrParam==0){
-						switch(MenuLevel){
-						case 7:
-						case 13: //считывание параметров ПОСТа
+					
+					if (TrParam==0)
+					{
+						switch(MenuLevel)
+						{
+							case LVL_VIEW_DEF:
+							case LVL_SETUP_DEF: 
 							{
 								if (ShiftMenu < 6)
 									TransDataInf(ShiftMenu + 1, 0x00);
@@ -1373,91 +1660,92 @@ __interrupt void Timer1ovf(void)
 									TransDataInf(0x09,0x00);
 								}
 							}break; 
-						case 8:		// 
-						case 14:	//считывание параметров приемника 
-						{
-							switch(ShiftMenu)
-							{
-								case 0:
-								TransDataInf(0x11, 0x00);
-								break;
-								case 1:
-								TransDataInf(0x13, 0x00);
-								break;
-								case 2:
-								TransDataInf(0x14, 0x00);
-								break;
-							}
-							
-						}break;	
-						case 9:	// *установить\параметры\прд
-						case 15:
+							case LVL_VIEW_PRM:		
+							case LVL_SETUP_PRM:	
 							{
 								switch(ShiftMenu)
 								{
-								case 0:
-								case 1: TransDataInf(0x21 + ShiftMenu, 0x00); break;	
-								case 2: TransDataInf(0x25, 0x00); break;
-								case 3: TransDataInf(0x24, 0x00); break;	
-								case 4: TransDataInf(0x26, 0x00); break;
+									case 0:
+									TransDataInf(0x11, 0x00);
+									break;
+									case 1:
+									TransDataInf(0x13, 0x00);
+									break;
+									case 2:
+									TransDataInf(0x14, 0x00);
+									break;
+								}
+								
+							}break;	
+							case LVL_VIEW_PRD:	
+							case LVL_SETUP_PRD:
+							{
+								switch(ShiftMenu)
+								{
+									case 0:
+									case 1: TransDataInf(0x21 + ShiftMenu, 0x00); break;	
+									case 2: TransDataInf(0x25, 0x00); break;
+									case 3: TransDataInf(0x24, 0x00); break;	
+									case 4: TransDataInf(0x26, 0x00); break;
 								}
 							}
 							break;
-						case 10:
-						case 16:{//общие параметры
-							switch(ShiftMenu){
-							case 0:
-							case 1: TransDataInf(0x36+ShiftMenu,0x00); break;
-							case 2: TransDataInf(0x39,0x00); break;
-							case 3: TransDataInf(0x3D,0x00); break;
-							case 4:
-							case 5:
-							case 6: TransDataInf(0x3C,0x00); break;
-							}
-						}break;
-						case 19: TransDataByte(0x34, 0x00); break;  //спросим еще раз параметры
-						case 20: { //запрос параметров в меню Тест
-							if ((CurrentState[2]>3)||(CurrentState[2]>3)||(CurrentState[4]>3)) TransDataByte(0x3E,0x00);
-						} break;
-						case 21:{  //если находимся в подпунктах Журнала
-							if (sArchive.RecCount>0){
-								if (ShiftMenu>sArchive.RecCount){ //в случае если указатель превышает кол-во записей массива
-									sArchive.Data[12]=0;
-									ShiftMenu=0;
+							case LVL_VIEW_GLB:
+							case LVL_SETUP_GLB:{//общие параметры
+								switch(ShiftMenu){
+									case 0:
+									case 1: TransDataInf(0x36+ShiftMenu,0x00); break;
+									case 2: TransDataInf(0x39,0x00); break;
+									case 3: TransDataInf(0x3D,0x00); break;
+									case 4:
+									case 5:
+									case 6: TransDataInf(0x3C,0x00); break;
 								}
-								Tr_buf_data_uart[5]=0;
-								Tr_buf_data_uart[4]=sArchive.CurCount + ShiftMenu;
-								TransDataInf(0xF2-(sArchive.Dev[sArchive.CurrDev]<<4), 0x02);
-							}else
-								TransDataInf(0xF1 - (sArchive.Dev[sArchive.CurrDev] << 4), 0x00);
-						}break;
-						
-						default: {TransDataInf(0x31, 0x00);} //посылаем запрос общего текущего состояния
+							}break;
+							case LVL_INFO: TransDataByte(0x34, 0x00); break;  //спросим еще раз параметры
+							case LVL_TEST: { //запрос параметров в меню Тест
+								if ((CurrentState[2]>3)||(CurrentState[2]>3)||(CurrentState[4]>3)) TransDataByte(0x3E,0x00);
+							} break;
+							case LVL_JRN_VIEW:{  //если находимся в подпунктах Журнала
+								if (sArchive.RecCount>0){
+									if (ShiftMenu>sArchive.RecCount){ //в случае если указатель превышает кол-во записей массива
+										sArchive.Data[12]=0;
+										ShiftMenu=0;
+									}
+									Tr_buf_data_uart[5]=0;
+									Tr_buf_data_uart[4]=sArchive.CurCount + ShiftMenu;
+									TransDataInf(0xF2-(sArchive.Dev[sArchive.CurrDev]<<4), 0x02);
+								}else
+									TransDataInf(0xF1 - (sArchive.Dev[sArchive.CurrDev] << 4), 0x00);
+							}break;
+							
+							default: {TransDataInf(0x31, 0x00);} //посылаем запрос общего текущего состояния
 						}
 					}
 					else{
-						switch(MenuLevel){
-						case 11:
+						switch(MenuLevel)
+						{
+							case LVL_SETUP_RGM:
 							{
 								switch(TrValue)
 								{
-								case 0:	//вывести 
+									case 0:	//вывести 
 									TransDataInf(0x70,0x00);
 									break; 
-								case 1: //ввести
+									case 1: //ввести
 									TransDataInf(0x71,0x00);
 									break; 
-								case 2: //тест 1
+									case 2: //тест 1
 									Tr_buf_data_uart[4] = 0x00; 
 									Tr_buf_data_uart[5] = 0x00; 
 									TransDataInf(0x7E, 0x02); 
 									break; 
-								case 3:	//тест 2
+									case 3:	//тест 2
 									TransDataInf(0x7D,0x00);
 									break;  
 								}
 							}break;
-						case 13: 
+							case LVL_SETUP_DEF: 
 							{	//установить/параметры/защита
 								if (TrParam == 0x09)
 								{
@@ -1471,7 +1759,7 @@ __interrupt void Timer1ovf(void)
 									NumberTransCom = 0;
 								}
 							}break;
-						case 14:	//установить/парметры/прм
+							case LVL_SETUP_PRM:	//установить/парметры/прм
 							{
 								if (TrParam > 0x92)
 								{
@@ -1483,7 +1771,7 @@ __interrupt void Timer1ovf(void)
 									TransDataByte(TrParam , TrValue);				
 							}
 							break;
-						case 15:	//установить/параметры/прд
+							case LVL_SETUP_PRD:	//установить/параметры/прд
 							{
 								if ( (TrParam < 0xA4) || (TrParam == 0xA6) )
 									TransDataByte(TrParam, TrValue);
@@ -1495,20 +1783,20 @@ __interrupt void Timer1ovf(void)
 								}				
 							}
 							break;
-						case 16:
-							{//общие параметры
+							case LVL_SETUP_GLB:
+							{
 								switch(TrParam){
-								case 5:
-								case 6:
-								case 7:{
-									Tr_buf_data_uart[4]=TrParam-4;
-									Tr_buf_data_uart[5]=TrValue;
-									TransDataInf(0xBC,2);
-								}break;			
-								default: TransDataByte(0xB5 + TrParam, TrValue);
+									case 5:
+									case 6:
+									case 7:{
+										Tr_buf_data_uart[4]=TrParam-4;
+										Tr_buf_data_uart[5]=TrValue;
+										TransDataInf(0xBC,2);
+									}break;			
+									default: TransDataByte(0xB5 + TrParam, TrValue);
 								}
 							}break;
-						case 20:
+							case LVL_TEST:
 							{
 								Tr_buf_data_uart[4] = TrParam;
 								Tr_buf_data_uart[5] = TrValue;
@@ -1523,13 +1811,15 @@ __interrupt void Timer1ovf(void)
 					}
 				}
 				//запросы для заполнения массива ModBus, получается что он полностью обновляется за 7 секунд.
-				if ((LoopUART==9)||(LoopUART==5)||(LoopUART==0)||(LoopUART==8)||(LoopUART==6)){
-					if(RecivVar==0) NumberLostLetter++; //если предыдущее сообщение не было получено, добавляем 1 к потеряным посылкам
+				if ((LoopUART==9)||(LoopUART==5)||(LoopUART==0)||(LoopUART==8)||(LoopUART==6))
+				{
+					if (RecivVar == 0) NumberLostLetter++; //если предыдущее сообщение не было получено, добавляем 1 к потеряным посылкам
 					else {NumberLostLetter=0;RecivVar=0;} //иначе пишем в потерянные посылки 0 и обнуляем переменную полученных данных
 					
 					ModBusOpros();
 				}
-			}else{  //если версия аппарата еще не считана
+			}else
+			{  //если версия аппарата еще не считана
 				if(RecivVar==0) NumberLostLetter++; //если предыдущее сообщение не было получено, добавляем 1 к потеряным посылкам
 				else {NumberLostLetter=0;RecivVar=0;} //иначе пишем в потерянные посылки 0 и обнуляем переменную полученных данных
 				
@@ -1705,24 +1995,29 @@ void LCDwork(void){
 			}
 		
 		if (bReadVers){  //если считана версия
-			switch (MenuLevel){
-			case 1:{ //первый уровень
+			switch (MenuLevel)
+			{
+			case LVL_START:
+			{ 
 				i = 2;
 				LCDMenu1(i++, 1);
 				LCDMenu1(i++, 2);
 				LCDMenu1(i, 3);
 			}break;
-			case 2:{ //второй уровень меню
+			case LVL_MENU:
+			{ 
 				if (LCD2new==1){ //обновляем информацию на втором меню
 					for(LCD2new=ShiftMenu;((LCD2new-ShiftMenu)<MaxDisplayLine);LCD2new++)
 						LCDprintf(2+LCD2new-ShiftMenu,1,2,Menu2point[LCD2new],1);
 					LCD2new=0;
 				}
 			}break;
-			case 3:{ //третий уровень меню, ввоод дата/время
+			case LVL_DATA_TIME:
+			{
 				if (LCD2new==1){LCDprintf(2,1,2,Menu31,1);LCDprintf(3,1,2,Menu32,1);LCD2new=0;}
 			}break;
-			case 4:{  //меню/журнал
+			case LVL_JRN:
+			{  
 				if (LCD2new==1){
 					for(i=2, LCD2new=ShiftMenu; (LCD2new<=4)&&(i<5) ; i++){
 						LCDprintChar(i, 1, LCD2new+0x31);
@@ -1733,26 +2028,26 @@ void LCDwork(void){
 					LCD2new=0;
 				}
 			}break;
-			case 5: //меню/установить
+			case LVL_SETUP: 
+			{
+				if (LCD2new==1)
 				{
-					if (LCD2new==1)
+					if (WorkRate!=0)
 					{
-						if (WorkRate!=0)
-						{
-							LCDprintf(2,1,2, Menu5point[ShiftMenu],1);
-							LCDprintf(3,1,2, Menu5point[ShiftMenu+1],1);
-						}
-						else
-							for(LCD2new=ShiftMenu;((LCD2new-ShiftMenu)<MaxDisplayLine);LCD2new++)
-							{
-								LCDprintf(2+LCD2new-ShiftMenu,1,2,Menu5point[LCD2new],1);
-							}
-						LCD2new=0;
+						LCDprintf(2,1,2, Menu5point[ShiftMenu],1);
+						LCDprintf(3,1,2, Menu5point[ShiftMenu+1],1);
 					}
+					else
+						for(LCD2new=ShiftMenu;((LCD2new-ShiftMenu)<MaxDisplayLine);LCD2new++)
+						{
+							LCDprintf(2+LCD2new-ShiftMenu,1,2,Menu5point[LCD2new],1);
+						}
+					LCD2new=0;
 				}
-				break;
-			case 6: 	// меню/просмотр параметров
-			case 12:	// меню/установить/параметры
+			}
+			break;
+			case LVL_VIEW_PARAM: 	
+			case LVL_SETUP_PARAM:	
 			{  
 				if (LCD2new == 1)
 				{
@@ -1764,8 +2059,8 @@ void LCDwork(void){
 					LCD2new = 0;
 				}
 			}break;
-			case 7:  //меню/просмотр параметров/Защита
-			case 13: //меню/установить/параметры/Защита
+			case LVL_VIEW_DEF: 
+			case LVL_SETUP_DEF: 
 				{
 					
 					if (LCD2new == 1)
@@ -1798,8 +2093,8 @@ void LCDwork(void){
 					}
 				}
 				break;
-			case 8:		//просмотр пар.\приемник
-			case 14:	//установить\параметры\приемник
+			case LVL_VIEW_PRM:		
+			case LVL_SETUP_PRM:	
 			{
 				if (LCD2new == 1)
 				{
@@ -1824,8 +2119,8 @@ void LCDwork(void){
 				}
 			}
 			break;
-			case 9:		//просмотр пар.\передатчик
-			case 15:	//установить\параметры\передатчик
+			case LVL_VIEW_PRD:		
+			case LVL_SETUP_PRD:	
 				{
 					if (LCD2new==1)
 					{
@@ -1845,8 +2140,8 @@ void LCDwork(void){
 					}
 				}
 				break;
-			case 10:  //меню/просмотр параметров/общие
-			case 16:  //меню/установить/параметры/общие
+			case LVL_VIEW_GLB:  
+			case LVL_SETUP_GLB: 
 				{
 					if (LCD2new==1)
 					{
@@ -1875,7 +2170,7 @@ void LCDwork(void){
 				}
 				break;
 				
-			case 11:  //меню/установить/режим
+			case LVL_SETUP_RGM:  
 				{
 					if (LCD2new==1)
 					{
@@ -1907,7 +2202,8 @@ void LCDwork(void){
 					}
 				}
 				break;
-			case 19: {//Меню прошивки
+			case LVL_INFO: 
+			{
 				LCDprintf(2, 1, 2, Menu19Param[ShiftMenu], 1);
 				LCDprintf(3, 1, 2, MenuValue, 1);
 				if (ShiftMenu < 3)
@@ -1933,7 +2229,8 @@ void LCDwork(void){
 								LCDprintf(3, 11, 2, fDopParamValueFalse, 1);
 						}
 			}break; 
-			case 20:  { //меню тестов
+			case LVL_TEST: 
+			{ 
 				if (LCD2new==1)
 					if (CurrentState[2]<0x04) {PressKey='C'; break;}   //если есть приемник, и он не в Тест1
 				if (CurrentState[4]<0x04) {PressKey='C'; break;}  //если есть передатчик, и он не в Тест1
@@ -1989,7 +2286,8 @@ void LCDwork(void){
 				LCD2new=0;
 				
 			}break;
-			case 21:{ //журнал/ (соб, защб прм, прд)
+			case LVL_JRN_VIEW:
+			{
 				LCDprintf(4,1,2,Menu21e[sArchive.Dev[sArchive.CurrDev]],1); // вывод устройства
 				LCDptinrArchCount(3, sArchive.RecCount, ShiftMenu);
 				if (sArchive.RecCount){  //если в архиве что-то есть, будем выводить записи
@@ -2109,7 +2407,7 @@ void LCDwork(void){
 				if ( ((AvarNoUsp == 1) && (LoopUART == 5)) || (AvarNoUsp == 0) )
 				{
 					FuncClearCharLCD(1, 9, 2);
-					if (MenuLevel != 3)
+					if (MenuLevel != LVL_DATA_TIME)
 					{
 						if (LCDtimer == 1) LCDprint(1, 1, 2, DataLCD, 0);
 						else
@@ -2133,7 +2431,7 @@ void LCDwork(void){
 				NumberAskMeasuring = eNumberAskMeasuring[0];
 				if ( ((AvarNoUsp == 1) && (LoopUART == 5)) || (AvarNoUsp == 0))
 				{
-					if (MenuLevel != 3) 
+					if (MenuLevel != LVL_DATA_TIME) 
 					{
 						FuncClearCharLCD(1, 11, 2);
 						if (bParamValue)

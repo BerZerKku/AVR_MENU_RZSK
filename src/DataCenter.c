@@ -119,15 +119,14 @@ extern unsigned __flash char  *mMenu6point[]; //массив строк для меню просмотр п
 //но при этом синхробайты не считаются
 unsigned char GetCRCSum(unsigned char *buf, char bufsize)
 {
-  unsigned char CRCbuf;
-  unsigned char k;
-
-  CRCbuf=0;
-  for (k=2; k<bufsize; k++)
-   {
-      CRCbuf+=buf[k];
-   };
-  return(CRCbuf);
+	unsigned char CRCbuf;
+	unsigned char k;
+	
+	CRCbuf = 0;
+	for (k = 2; k < bufsize; k++)
+		CRCbuf+=buf[k];
+	
+	return(CRCbuf);
 }
 
 //подпрограмма подготовки отпраки одного байта информации по UART

@@ -3,10 +3,7 @@
 
 //для двухчастотки
 //версия прошивки, если первый ноль - то убираем
-#define Insertion 0x0125
-
-//выбор значения делителя для УСП
-#define USPtime 2
+#define Insertion 0x0126
 
 //Взять старший байт int
 #define Hi(a) (unsigned char) (a>>8)

@@ -1949,6 +1949,9 @@
         <name>$PROJ_DIR$\inc\InterfaceS.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\inc\Menu.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\inc\MyDef.h</name>
       </file>
       <file>
