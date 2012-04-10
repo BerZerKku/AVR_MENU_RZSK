@@ -8,9 +8,17 @@ __flash unsigned char fNoReadVers[]	= "  Инициализация     ";
 
 __flash unsigned char Menu21[] = "1.Журнал.";
 __flash unsigned char Menu22[] = "2.Дата/время.";
-__flash unsigned char Menu23[] = "3.Установить.";
-__flash unsigned char Menu24[] = "4.Просмотр парам.";
-__flash unsigned  __flash char *Menu2point[] = {Menu21, Menu22, Menu23, Menu24};
+__flash unsigned char Menu23[] = "3.Управление.";
+__flash unsigned char Menu24[] = "4.Установить.";
+__flash unsigned char Menu25[] = "5.Просмотр парам.";
+__flash unsigned  __flash char *Menu2point[] = 
+{
+	Menu21, 
+	Menu22, 
+	Menu23, 
+	Menu24,
+	Menu25
+};
 
 __flash unsigned char Menu31[] = "1. Дата.            ";
 __flash unsigned char Menu32[] = "2. Время.           ";
@@ -166,7 +174,7 @@ __flash unsigned char Menu1post03[]="Работа  ";
 __flash unsigned char Menu1post04[]="Неиспр. ";
 __flash unsigned char Menu1post05[]="П.неиспр";
 __flash unsigned char Menu1post06[]="Ожидание";
-__flash unsigned char Menu1post07[]="?0x07?  ";
+__flash unsigned char Menu1post07[]="Нал.пуск";
 __flash unsigned char Menu1post08[]="?0x08?  ";
 __flash unsigned char Menu1post09[]="Нет РЗ  ";
 __flash unsigned char Menu1post0A[]="Речь    ";
@@ -386,4 +394,19 @@ __flash unsigned char ArchEvStart[]="Начало ";
 __flash unsigned char ArchEvEnd[]=  "Конец ";
 __flash unsigned char ArchEvCom[]="команды";
 
+// Элементы пункта Меню / Управление
+__flash unsigned char fuControlItem0[] = ".Сброс своего.     ";
+__flash unsigned char fuControlItem1[] = ".Пуск налад. вкл.  ";
+__flash unsigned char fuControlItem2[] = ".Пуск налад. выкл. ";
 
+// Действия элементов пункта Меню / Управление
+// должно соответсвовать eControl
+__flash unsigned char fuControlAction0[] = "Сброс";
+__flash unsigned char fuControlAction1[] = "Пуск";
+__flash unsigned char fuControlAction2[] = "Стоп";
+__flash unsigned char __flash *fuControlAction[] = 
+{
+	fuControlAction0,
+	fuControlAction1,
+	fuControlAction2
+};
