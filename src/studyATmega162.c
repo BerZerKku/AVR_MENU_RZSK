@@ -256,7 +256,6 @@ static void vControlMenuSetup(void)
 		stControl.fuName[cnt] 		= fuControlItem2;
 		stControl.uNumber[cnt] 		= 9;
 		stControl.eActionNumber[cnt]= CTRL_STOP;
-		cnt++;
 	}
 	else
 	{

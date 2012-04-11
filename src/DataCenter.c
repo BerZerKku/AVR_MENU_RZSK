@@ -394,22 +394,30 @@ void FParamPrd(unsigned char com)
  	RecivVar=1;
 }
 
-void FCurrentState(void){
-  for (l=0;l<4;l++) { //сделаем проверку принятого состояния и перепишем значение в массив
-    if (Rec_buf_data_uart[l*3+4]>0x05) CurrentState[l*2]=0x4E;
-    else CurrentState[l*2]=Rec_buf_data_uart[l*3+4];
-
-    if (Rec_buf_data_uart[l*3+1+4]>0x0A) CurrentState[l*2+1]=0x4E;
-    else CurrentState[l*2+1]=Rec_buf_data_uart[l*3+4+1];
-
-    Dop_byte[l]=Rec_buf_data_uart[l*3+2+4];
-  }
-  LCD2new=1;
-  RecivVar=1;
-};
+void FCurrentState(void)
+{
+	for (unsigned char l = 0; l < 4; l++) 
+	{ //сделаем проверку принятого состояния и перепишем значение в массив
+		if (Rec_buf_data_uart[l * 3 + 4] > 0x05) 
+			CurrentState[l * 2] = 0x4E;
+		else 
+			CurrentState[l * 2] = Rec_buf_data_uart[l * 3 + 4];
+		
+		if (Rec_buf_data_uart[l * 3 + 1 + 4] > 0x0A) 
+			CurrentState[l * 2 + 1] = 0x4E;
+		else 
+			CurrentState[l * 2 + 1] = Rec_buf_data_uart[l * 3 + 4 + 1];
+		
+		Dop_byte[l] = Rec_buf_data_uart[l * 3 + 2 + 4];
+	}
+	
+	LCD2new = 1;
+	RecivVar = 1;
+}
 
 void FGlobalCurrentState(void){
-  for (l=0;l<20;l++) GlobalCurrentState[l]=Rec_buf_data_uart[l+4];
+  for (unsigned char l = 0; l < 20; l++) 
+	  GlobalCurrentState[l] = Rec_buf_data_uart[l + 4];
 
   if ((GlobalCurrentState[12]!=0)||(GlobalCurrentState[13]!=0)) bGlobalAvar=true; else bGlobalAvar=false;
   if ((GlobalCurrentState[14]!=0)||(GlobalCurrentState[15]!=0)) bGlobalWarn=true; else bGlobalWarn=false;
@@ -426,64 +434,72 @@ void FGlobalCurrentState(void){
   if ((GlobalCurrentState[16]!=0)||(GlobalCurrentState[17]!=0)) bRec2Avar=true; else bRec2Avar=false;
   if ((GlobalCurrentState[18]!=0)||(GlobalCurrentState[19]!=0)) bRec2Warn=true; else bRec2Warn=false;
 
-  LCD2new=1;
-  RecivVar=1;
-};
+  LCD2new = 1;
+  RecivVar = 1;
+}
 
 void FDataTime(void){
-  DataLCD[7]=(Rec_buf_data_uart[4]&0x0F)+0x30; //1-цы лет
-  DataLCD[6]=(Rec_buf_data_uart[4]>>4)+0x30;  //10-ки лет
-  DataLCD[4]=(Rec_buf_data_uart[5]&0x0F)+0x30;  //1-цы мес
-  DataLCD[3]=(Rec_buf_data_uart[5]>>4)+0x30;  //10-и мес
-  DataLCD[1]=(Rec_buf_data_uart[6]&0x0F)+0x30;  //1-цы дней
-  DataLCD[0]=(Rec_buf_data_uart[6]>>4)+0x30;  //10-и дней
-
-  TimeLCD[1]=(Rec_buf_data_uart[7]&0x0F)+0x30; //1-цы час
-  TimeLCD[0]=(Rec_buf_data_uart[7]>>4)+0x30;  //10-ки час
-  TimeLCD[4]=(Rec_buf_data_uart[8]&0x0F)+0x30;  //1-цы мин
-  TimeLCD[3]=(Rec_buf_data_uart[8]>>4)+0x30;  //10-и мин
-  TimeLCD[7]=(Rec_buf_data_uart[9]&0x0F)+0x30;  //1-цы сек
-  TimeLCD[6]=(Rec_buf_data_uart[9]>>4)+0x30;  //10-и сек
-
-  //Проверка на достовереность
-  for (j=0;j<8;j++){
-    if  (((DataLCD[j]>0x39)||(DataLCD[j]<0x30))&&(DataLCD[j]!='.')) DataError++; else DataError=0;
-    if  (((TimeLCD[j]>0x39)||(TimeLCD[j]<0x30))&&(TimeLCD[j]!=':')) TimeError++; else TimeError=0;
-  }
-
-  if (((DataLCD[7]-0x30)+((DataLCD[6]-0x30)*10))>99)  DataError++;
-  if (((DataLCD[4]-0x30)+((DataLCD[3]-0x30)*10))>12)  DataError++;
-  if (((DataLCD[1]-0x30)+((DataLCD[0]-0x30)*10))>31)  DataError++;
-  if (((TimeLCD[1]-0x30)+((TimeLCD[0]-0x30)*10))>24)  TimeError++;
-  if (((TimeLCD[4]-0x30)+((TimeLCD[3]-0x30)*10))>60)  TimeError++;
-  if (((TimeLCD[7]-0x30)+((TimeLCD[6]-0x30)*10))>60)  TimeError++;
-
-  if (DataError!=0){
-    DataLCD[7]='0'; //1-цы лет
-    DataLCD[6]='0';  //10-ки лет
-    DataLCD[4]='0';  //1-цы мес
-    DataLCD[3]='0';  //10-и мес
-    DataLCD[1]='0';  //1-цы дней
-    DataLCD[0]='0';  //10-и дней
-    DataError=0;
-    for (j=0; j<3; j++) TrDataTimeMass[j]=0x00;
-  }
-  else for (j=0; j<3; j++) TrDataTimeMass[j]=Rec_buf_data_uart[4+j];
-
-  if (TimeError!=0){
-    TimeLCD[1]='0'; //1-цы час
-    TimeLCD[0]='0';  //10-ки час
-    TimeLCD[4]='0';  //1-цы мин
-    TimeLCD[3]='0';  //10-и мин
-    TimeLCD[7]='0';  //1-цы сек
-    TimeLCD[6]='0';  //10-и сек
-    TimeError=0;
-    for (j=0; j<3; j++) TrDataTimeMass[j+3]=0x00;
-  }
-  else for (j=0; j<3; j++) TrDataTimeMass[j+3]=Rec_buf_data_uart[4+j+3];
-
-  RecivVar=1;
-  LCDtimerNew=1; //говорим, что было получено новое время и дата
+	DataLCD[7]=(Rec_buf_data_uart[4]&0x0F)+0x30; //1-цы лет
+	DataLCD[6]=(Rec_buf_data_uart[4]>>4)+0x30;  //10-ки лет
+	DataLCD[4]=(Rec_buf_data_uart[5]&0x0F)+0x30;  //1-цы мес
+	DataLCD[3]=(Rec_buf_data_uart[5]>>4)+0x30;  //10-и мес
+	DataLCD[1]=(Rec_buf_data_uart[6]&0x0F)+0x30;  //1-цы дней
+	DataLCD[0]=(Rec_buf_data_uart[6]>>4)+0x30;  //10-и дней
+	
+	TimeLCD[1]=(Rec_buf_data_uart[7]&0x0F)+0x30; //1-цы час
+	TimeLCD[0]=(Rec_buf_data_uart[7]>>4)+0x30;  //10-ки час
+	TimeLCD[4]=(Rec_buf_data_uart[8]&0x0F)+0x30;  //1-цы мин
+	TimeLCD[3]=(Rec_buf_data_uart[8]>>4)+0x30;  //10-и мин
+	TimeLCD[7]=(Rec_buf_data_uart[9]&0x0F)+0x30;  //1-цы сек
+	TimeLCD[6]=(Rec_buf_data_uart[9]>>4)+0x30;  //10-и сек
+	
+	//Проверка на достовереность
+	for (unsigned char j = 0; j < 8; j++)
+	{
+		if  (((DataLCD[j]>0x39)||(DataLCD[j]<0x30))&&(DataLCD[j]!='.')) DataError++; else DataError=0;
+		if  (((TimeLCD[j]>0x39)||(TimeLCD[j]<0x30))&&(TimeLCD[j]!=':')) TimeError++; else TimeError=0;
+	}
+	
+	if (((DataLCD[7]-0x30)+((DataLCD[6]-0x30)*10))>99)  DataError++;
+	if (((DataLCD[4]-0x30)+((DataLCD[3]-0x30)*10))>12)  DataError++;
+	if (((DataLCD[1]-0x30)+((DataLCD[0]-0x30)*10))>31)  DataError++;
+	if (((TimeLCD[1]-0x30)+((TimeLCD[0]-0x30)*10))>24)  TimeError++;
+	if (((TimeLCD[4]-0x30)+((TimeLCD[3]-0x30)*10))>60)  TimeError++;
+	if (((TimeLCD[7]-0x30)+((TimeLCD[6]-0x30)*10))>60)  TimeError++;
+	
+	if (DataError!=0)
+	{
+		DataLCD[7]='0'; //1-цы лет
+		DataLCD[6]='0';  //10-ки лет
+		DataLCD[4]='0';  //1-цы мес
+		DataLCD[3]='0';  //10-и мес
+		DataLCD[1]='0';  //1-цы дней
+		DataLCD[0]='0';  //10-и дней
+		DataError=0;
+		for (unsigned char j=0; j<3; j++) 
+			TrDataTimeMass[j]=0x00;
+	}
+	else 
+		for (unsigned char j = 0; j < 3; j++) 
+			TrDataTimeMass[j]=Rec_buf_data_uart[4+j];
+	
+	if (TimeError!=0){
+		TimeLCD[1]='0'; //1-цы час
+		TimeLCD[0]='0';  //10-ки час
+		TimeLCD[4]='0';  //1-цы мин
+		TimeLCD[3]='0';  //10-и мин
+		TimeLCD[7]='0';  //1-цы сек
+		TimeLCD[6]='0';  //10-и сек
+		TimeError=0;
+		for (unsigned char j = 0; j < 3; j++) 
+			TrDataTimeMass[j+3]=0x00;
+	}
+	else 
+		for (unsigned char j = 0; j < 3; j++) 
+			TrDataTimeMass[j + 3] = Rec_buf_data_uart[4 + j + 3];
+	
+	RecivVar = 1;
+	LCDtimerNew = 1; //говорим, что было получено новое время и дата
 };
 
 void fDopCodeToChar(unsigned char *Mass, unsigned char StartAddr, unsigned char Factor, unsigned char Param, unsigned char Value){  //массив, начальный адрес, множитель, параметр
