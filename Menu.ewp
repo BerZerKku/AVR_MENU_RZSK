@@ -324,7 +324,7 @@
         <option>
           <name>CCOptimization</name>
           <version>1</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CCAllowList</name>
@@ -428,7 +428,7 @@
         <option>
           <name>CCOptimizationSlave</name>
           <version>1</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>CCOutputFile</name>

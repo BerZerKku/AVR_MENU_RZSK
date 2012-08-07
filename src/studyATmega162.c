@@ -806,12 +806,12 @@ void FuncInputData(void)
 
 void PressInMenuJournal(char Key)
 {  //нажатие в меню Журна -> переход в подпункты журнала
-	MenuLevel=21;
+	MenuLevel = LVL_JRN_VIEW;
 	LCDbufClear();
-	ShiftMenu=0;
-	MaxDisplayLine=2;
-	sArchive.CurrDev=Key-0x31;
-	sArchive.RecCount=0;  //для начала сбросим кол-во данных
+	ShiftMenu = 0;
+	MaxDisplayLine = 2;
+	sArchive.CurrDev = Key - 0x31;
+	sArchive.RecCount = 0;  //для начала сбросим кол-во данных
 }
 
 void Menu_Journal(void)
@@ -1105,7 +1105,7 @@ static void FuncPressKey(void)
 			case '2':
 			case '3':
 			case '4':
-			PressInMenuJournal('1');  
+			PressInMenuJournal(PressKey);  
 			break;
 		}
 	}
@@ -1426,13 +1426,16 @@ static void FuncPressKey(void)
 					case 20:{
 						if (ShiftMenu>0) {ShiftMenu--; LCD2new=1; LCDbufClear(); NumberCom=1;}
 					} break; //прокрутка меню
-					case 21:{
-						if (sArchive.RecCount>1){
-							if (ShiftMenu>0) ShiftMenu--;
-							else ShiftMenu=sArchive.RecCount-1;
-							sArchive.Data[12]=0;
-							FuncClearCharLCD(2,1,40); //очистка инф-ы
-							FuncClearCharLCD(4,13,8); //очистка даты записи
+					case LVL_JRN_VIEW:{
+						if (sArchive.RecCount > 1)
+						{
+							if (ShiftMenu > 0) 
+								ShiftMenu--;
+							else 
+								ShiftMenu = sArchive.RecCount - 1;
+							sArchive.Data[12] = 0;
+							FuncClearCharLCD(2, 1, 40); //очистка инф-ы
+							FuncClearCharLCD(4, 13, 8); //очистка даты записи
 						}
 					}break;
 					
@@ -1456,13 +1459,16 @@ static void FuncPressKey(void)
 					case 20:{
 						if (ShiftMenu<MaxShiftMenu) {ShiftMenu++; LCD2new=1; LCDbufClear(); NumberCom=1;}
 					} break; //прокрутка меню
-					case 21:{
-						if (sArchive.RecCount>1){
-							if (ShiftMenu<(sArchive.RecCount-1)) ShiftMenu++;
-							else ShiftMenu=0;
-							sArchive.Data[12]=0;
-							FuncClearCharLCD(2,1,40); //очистка инф-ы
-							FuncClearCharLCD(4,13,8); //очистка даты записи
+					case LVL_JRN_VIEW:{
+						if (sArchive.RecCount > 1)
+						{
+							if (ShiftMenu < (sArchive.RecCount - 1)) 
+									ShiftMenu++;
+							else 
+								ShiftMenu = 0;
+							sArchive.Data[12] = 0;
+							FuncClearCharLCD(2, 1, 40); //очистка инф-ы
+							FuncClearCharLCD(4, 13, 8); //очистка даты записи
 						}
 					}break;
 				}
@@ -1803,17 +1809,27 @@ __interrupt void Timer1ovf(void)
 							case LVL_TEST: { //запрос параметров в меню Тест
 								if ((CurrentState[2]>3)||(CurrentState[2]>3)||(CurrentState[4]>3)) TransDataByte(0x3E,0x00);
 							} break;
-							case LVL_JRN_VIEW:{  //если находимся в подпунктах Журнала
-								if (sArchive.RecCount>0){
-									if (ShiftMenu>sArchive.RecCount){ //в случае если указатель превышает кол-во записей массива
-										sArchive.Data[12]=0;
-										ShiftMenu=0;
+							case LVL_JRN_VIEW:
+							{  //если находимся в подпунктах Журнала
+								if (sArchive.RecCount > 0)
+								{
+									if (ShiftMenu > sArchive.RecCount)
+									{ //в случае если указатель превышает кол-во записей массива
+										sArchive.Data[12] = 0;
+										ShiftMenu = 0;
 									}
-									Tr_buf_data_uart[5]=0;
-									Tr_buf_data_uart[4]=sArchive.CurCount + ShiftMenu;
-									TransDataInf(0xF2-(sArchive.Dev[sArchive.CurrDev]<<4), 0x02);
-								}else
+									Tr_buf_data_uart[5] = 0;
+									Tr_buf_data_uart[4] = sArchive.CurCount + ShiftMenu;
+									TransDataInf(0xF2 - (sArchive.Dev[sArchive.CurrDev] << 4), 0x02);
+									
+//									Tr_buf_data_uart1[5] = 0;
+//									Tr_buf_data_uart1[4] = sArchive.CurCount + ShiftMenu;
+//									TransDataInf1(0xF2 - (sArchive.Dev[sArchive.CurrDev] << 4), 0x02);
+								}
+								else
+								{
 									TransDataInf(0xF1 - (sArchive.Dev[sArchive.CurrDev] << 4), 0x00);
+								}
 							}break;
 							
 							default: {TransDataInf(0x31, 0x00);} //посылаем запрос общего текущего состояния
@@ -1902,7 +1918,6 @@ __interrupt void Timer1ovf(void)
 								Tr_buf_data_uart1[5] = TrValue;
 								TransDataInf1(0x7E,2);
 							}break;
-							
 							case LVL_CONTROL:
 							TransDataByte(TrParam, TrValue);
 							break;

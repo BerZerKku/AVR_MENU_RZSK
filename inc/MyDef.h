@@ -34,7 +34,7 @@
 //размер буфера принимаемых по UART данных
 #define MaxLenghtRecBuf 64
 //размер буфера передаваемых по UART данных
-#define MaxLenghtTrBuf 25
+#define MaxLenghtTrBuf 64
 #define MaxLenghtTrBuf1 255
 //5 //максимальное расстояние между байтами *1000мкс
 #define MaxPause 30

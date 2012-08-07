@@ -10,7 +10,7 @@ void StartTrans(char SizeMessage);
 void StartUART(void);
 
 extern unsigned char Rec_buf_data_uart [64] ; //буфер принимаемых данных
-extern unsigned char Tr_buf_data_uart [25] ; //буфер передаваемых данных
+extern unsigned char Tr_buf_data_uart [64] ; //буфер передаваемых данных
 extern char Sost;
 //extern unsigned char DataRec; //=1, когда получено сообщение
 

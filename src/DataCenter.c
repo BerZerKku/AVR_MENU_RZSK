@@ -828,35 +828,48 @@ void VersDevice(void){
   sArchive.Dev[3]=1;
 }
 
-void FArchive(void){
-  bool er=false;
-
-  RecivVar=1;
-  LCD2new=1;
-
-  //проверка на соответствие принятой команды, текущему пункту меню
-  if ((0x0F - (Rec_buf_data_uart[2]>>4)) == sArchive.Dev[sArchive.CurrDev])  er=true;
-
-  if ((Rec_buf_data_uart[2]&0x0F)==0x01){ //кол-во записей архива
-    if (er){  //если получена команда этого архива
-      if (Rec_buf_data_uart[5]) {
-        sArchive.RecCount=256;
-        sArchive.CurCount=Rec_buf_data_uart[4];
-      }else{
-        sArchive.RecCount = Rec_buf_data_uart[4];
-        sArchive.CurCount = 0;
-      }
-    }
-  }
-
-  if ((Rec_buf_data_uart[2]&0x0F)==0x02){ //записи архива
-    unsigned char i;
-    if(er){ //если получена команда этого архива
-      for(i=0; i<16; i++) sArchive.Data[i]=Rec_buf_data_uart[4+i];
-    }else{
-      for(i=0; i<16; i++) sArchive.Data[i]=0x00;
-    }
-  }
+void FArchive(void)
+{
+	// Флаг принятия команды архива соответствующей текущему пункту
+	// false - ошибка
+	bool er = false;
+	
+	RecivVar=1;
+	LCD2new=1;
+	
+	//проверка на соответствие принятой команды, текущему пункту меню
+	if ((0x0F - (Rec_buf_data_uart[2]>>4)) == sArchive.Dev[sArchive.CurrDev])  
+		er = true;
+	
+	if ((Rec_buf_data_uart[2]&0x0F)==0x01)
+	{ //кол-во записей архива
+		if (er)
+		{  //если получена команда этого архива
+			if (Rec_buf_data_uart[5]) 
+			{
+				sArchive.RecCount = 256;
+				sArchive.CurCount = Rec_buf_data_uart[4];
+			}
+			else
+			{
+				sArchive.RecCount = Rec_buf_data_uart[4];
+				sArchive.CurCount = 0;
+			}
+		}
+	}
+	
+	if ((Rec_buf_data_uart[2]&0x0F)==0x02)
+	{ 	//записи архива
+		unsigned char i;
+		if(er)
+		{	//если получена команда этого архива
+			for(i=0; i<16; i++) 
+				sArchive.Data[i] = Rec_buf_data_uart[4+i];
+		}else{
+			for(i=0; i<16; i++) 
+				sArchive.Data[i] = 0x00;
+		}
+	}
 }
 
 //обработка принятого сообщения
@@ -872,7 +885,16 @@ void DataModBus(unsigned char NumberByte)
     {
 		//for (i_dc=0; i_dc<NumberByte; i_dc++) Tr_buf_data_uart1[i_dc]=Rec_buf_data_uart[i_dc];
         //TransDataInf1(Tr_buf_data_uart1[2], Tr_buf_data_uart1[3]);
-			
+		
+//		uint8_t com = Rec_buf_data_uart[2];
+//		if ( (com == 0xC2) || (com == 0xF2) || (com == 0xD2) || (com == 0xE2) )
+//		{
+//			for (uint8_t i = 0; i < NumberByte; i++) 
+//				Tr_buf_data_uart1[i]=Rec_buf_data_uart[i];
+//        	TransDataInf1(Tr_buf_data_uart1[2], Tr_buf_data_uart1[3]);
+//		}
+
+		
         if (PCready == 2)
 		{
         	for (i_dc = 2; i_dc < NumberByte; i_dc++)
