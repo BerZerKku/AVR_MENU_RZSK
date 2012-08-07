@@ -36,6 +36,7 @@ __flash unsigned char Menu64[] = ".Общие.";
 __flash unsigned __flash char *Menu6point[] = {Menu61, Menu62, Menu63, Menu64}; //массив строк для меню просмотр параметров/ установить параметры
 
 //Параметры Поста
+#define MAX_DEF_PARAM (sizeof(Menu7paramPOST) / sizeof(Menu7paramPOST[0]))
 __flash unsigned char Menu70[] = "Тип защиты          ";
 __flash unsigned char Menu71[] = "Тип линии           ";
 __flash unsigned char Menu72[] = "Доп. время без ман. ";
@@ -43,6 +44,7 @@ __flash unsigned char Menu73[] = "Комп.задержки в лин.";
 __flash unsigned char Menu74[] = "Перекрытие импульсов";
 __flash unsigned char Menu75[] = "Загр.чувствит. РЗ   ";
 __flash unsigned char Menu76[] = "Порог ПРЕДУПР по РЗ ";
+__flash unsigned char Menu77[] = "Тип приемника       ";
 __flash unsigned __flash char *Menu7paramPOST[] = 
 {
 	Menu70, 
@@ -51,7 +53,8 @@ __flash unsigned __flash char *Menu7paramPOST[] =
 	Menu73, 
 	Menu74, 
 	Menu75, 
-	Menu76
+	Menu76, 
+	Menu77
 };
 //диапазон значений для Поста
 __flash unsigned char Menu13Shift0[] =	"список";
@@ -61,6 +64,7 @@ __flash unsigned char Menu13Shift3[] =	"0..18";
 __flash unsigned char Menu13Shift4[] =	"0..54";
 __flash unsigned char Menu13Shift5[] =	"0..20";
 __flash unsigned char Menu13Shift6[] =	"0..20";
+__flash unsigned char Menu13Shift7[] =	"список";
 __flash unsigned __flash char *Menu13ParamRange[] = 
 {
 	Menu13Shift0, 
@@ -69,7 +73,8 @@ __flash unsigned __flash char *Menu13ParamRange[] =
 	Menu13Shift3, 
 	Menu13Shift4, 
 	Menu13Shift5, 
-	Menu13Shift6
+	Menu13Shift6,
+	Menu13Shift7
 };
 
 //Параметры Приемника
@@ -77,7 +82,7 @@ __flash unsigned char Menu81[] = "Время включения     ";
 __flash unsigned char Menu82[] = "Задержка на выкл. ?к";
 __flash unsigned char Menu83[] = "Блок. команды  4..1 ";
 __flash unsigned __flash char *Menu8paramPRM[] = {Menu81, Menu82, Menu83};
-#define defNumParamPrm (sizeof(Menu8paramPRM) / sizeof(Menu8paramPRM[0]))
+#define MAX_PRM_PARAM (sizeof(Menu8paramPRM) / sizeof(Menu8paramPRM[0]))
 __flash unsigned char Menu8Shift0[]	= "0..10";
 __flash unsigned char Menu8Shift2[]	= "0..1000";
 __flash unsigned char Menu8Shift3[]	= "нет";
@@ -90,7 +95,7 @@ __flash unsigned char Menu92[]= "Длительность команды";
 __flash unsigned char Menu93[]= "Длит. команды  4..1 ";
 __flash unsigned char Menu94[]= "Блок. команды  4..1 ";
 __flash unsigned __flash char* Menu9paramPRD[]={Menu91, Menu92, Menu93, Menu94};
-#define defNumParamPrd (sizeof(Menu9paramPRD) / sizeof(Menu9paramPRD[0]))
+#define MAX_PRD_PARAM (sizeof(Menu9paramPRD) / sizeof(Menu9paramPRD[0]))
 __flash unsigned char Menu9Shift0[]="0..10";
 __flash unsigned char Menu9Shift1[]="20..100";
 __flash unsigned char Menu9Shift2[]="";
@@ -136,13 +141,28 @@ __flash unsigned char ParamTypeDef6[]="ППЗ-ПрПд  ";
 __flash unsigned char ParamTypeDef7[]="ППЗ-Прм-МК";
 __flash unsigned char ParamTypeDef8[]="ошибка    ";
 #define defNumTypeDef 8
-__flash unsigned __flash char* ParamTypeDef[]={	ParamTypeDef0, ParamTypeDef1, ParamTypeDef2, ParamTypeDef3,
+__flash unsigned __flash char *ParamTypeDef[]={	ParamTypeDef0, ParamTypeDef1, ParamTypeDef2, ParamTypeDef3,
 												ParamTypeDef4, ParamTypeDef5, ParamTypeDef6, ParamTypeDef7, ParamTypeDef8};
 
 __flash unsigned char ParamLineDef0[]="2 концевая";
 __flash unsigned char ParamLineDef1[]="3 концевая";
 __flash unsigned char ParamLineDef2[]="ошибка    ";
-__flash unsigned __flash char* ParamLineDef[] = {ParamLineDef0, ParamLineDef1, ParamLineDef2};
+__flash unsigned __flash char *ParamLineDef[] = {ParamLineDef0, ParamLineDef1, ParamLineDef2};
+
+
+#define MAX_NUM_ITEM_TYPE_PRM ( (sizeof(ParamTypePrmDef) / sizeof(ParamTypePrmDef[0])) - 1 )
+__flash unsigned char ParamTypePrmDef0[] = "акт+пасс ";
+__flash unsigned char ParamTypePrmDef1[] = "активная ";
+__flash unsigned char ParamTypePrmDef2[] = "пассивная";
+__flash unsigned char ParamTypePrmDef3[] = "ошибка   ";
+__flash unsigned __flash char *ParamTypePrmDef[] = 
+{ 
+	ParamTypePrmDef0,
+	ParamTypePrmDef1,
+	ParamTypePrmDef2,
+	ParamTypePrmDef3
+};
+							
 
 //меню Установить
 __flash unsigned char Menu1Def[]="ЗАЩ:";
@@ -224,6 +244,7 @@ __flash unsigned char MenuAllSynchrTimer1[]="вкл.";
 __flash unsigned __flash char* MenuAllSynchrTimerNum[]={MenuAllSynchrTimer0, MenuAllSynchrTimer1, MenuAllSynchrTimer2};
 
 __flash unsigned char ParamRange[]="Диапазон: ";
+
 //диапазон значение для Общих параметров
 __flash unsigned char Menu16Shift0[]="вкл/выкл";
 __flash unsigned char Menu16Shift1[]="вкл/выкл";
@@ -234,6 +255,7 @@ __flash unsigned char Menu16Shift5[]="0..22";
 __flash unsigned char Menu16Shift6[]="100..1000";
 __flash unsigned char Menu16Shift7[]="0..10";
 __flash unsigned __flash char* Menu16ParamRange[]={Menu16Shift0,Menu16Shift1,Menu16Shift2,Menu16Shift3, Menu16Shift4,Menu16Shift5,Menu16Shift7};
+
 //Прошивки
 __flash unsigned char Menu19Shift0[]="Прошивка P-USP  ";
 __flash unsigned char Menu19Shift1[]="Прошивка AT-USP ";

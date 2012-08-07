@@ -28,6 +28,7 @@ extern unsigned char MenuTypeDefend;
 extern unsigned char MenuTypeLine;
 extern unsigned char MenuTimeNoMan[];
 extern unsigned char MenuOverlapPulse[];
+extern unsigned char MenuTypePrm;
 
 //Параметры Общие
 extern unsigned char MenuAllKeepComPRM;
@@ -170,18 +171,18 @@ void FParamDef(unsigned char command)
   
   switch(command)
 	{
-		case 0x01:
+		case 0x01:	// тип защиты
 		{
 			MenuTypeDefend = (Rec_buf_data_uart[4] < 8) ? Rec_buf_data_uart[4] : 8;
 		}break;
-		case 0x02:
+		case 0x02:	// тип линии
 		{
 			if ( (Rec_buf_data_uart[4] >= 1) && (Rec_buf_data_uart[4] <= 2) )
 				MenuTypeLine = Rec_buf_data_uart[4] - 1;
 			else
 				MenuTypeLine = 2;
 		}break;
-		case 0x03:
+		case 0x03:	// доп. время без манипуляции
 		{
 			if (Rec_buf_data_uart[4] <= 99)
 			{
@@ -194,8 +195,8 @@ void FParamDef(unsigned char command)
 				MenuTimeNoMan[1] = '?';
 			}
 		}break;
-		case 0x04:
-		{//принято значение допустимых провалов в сигнале приема (компенсация задержки распространения)
+		case 0x04:	// компенсация задержки в линии
+		{
 			if ( (Rec_buf_data_uart[4]) <= 18 )
 			{
 				MenuPossibleTimeSignal1[0] = (Rec_buf_data_uart[4] / 10) + 0x30;
@@ -217,8 +218,8 @@ void FParamDef(unsigned char command)
 				MenuPossibleTimeSignal2[1] = '?';
 			}
 		}break;
-		case 0x05:
-		{// принято значение перекрытия импульсов
+		case 0x05:	// принято значение перекрытия импульсов
+		{
 			if (Rec_buf_data_uart[4] <= 54 )
 			{
 				MenuOverlapPulse[0] = (Rec_buf_data_uart[4] / 10) + 0x30;
@@ -230,8 +231,8 @@ void FParamDef(unsigned char command)
 				MenuOverlapPulse[1] = '?';
 			}
 		}break;
-		case 0x06:
-		{//принято значение напряжения порога
+		case 0x06:	// принято значение напряжения порога
+		{
 			if (Rec_buf_data_uart[4] <= 20)
 			{
 				MenuVoltageLimit[0] = (Rec_buf_data_uart[4] / 10) + 0x30;
@@ -243,8 +244,15 @@ void FParamDef(unsigned char command)
 				MenuVoltageLimit[1] = '?';
 			}
 		}break;
-		case 0x09:
-		{// порог предупреждения по РЗ
+		case 0x07:	// тип приемника
+		{
+			if (Rec_buf_data_uart[4] < 3)
+				MenuTypePrm = Rec_buf_data_uart[4];
+			else
+				MenuTypePrm = 3;
+		}break;
+		case 0x09:	// порог предупреждения по РЗ
+		{
 			if (Rec_buf_data_uart[4] <= 20)
 			{
 				MenuRZalarm[0] = (Rec_buf_data_uart[4] / 10) + '0';
@@ -255,8 +263,7 @@ void FParamDef(unsigned char command)
 				MenuRZalarm[0] = '?';
 				MenuRZalarm[1] = '?';
 			}
-		}
-		break;
+		}break;
 	}
   
   RecivVar=1;

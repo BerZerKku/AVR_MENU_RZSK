@@ -145,6 +145,7 @@ unsigned char MenuRZalarm[]="?? дБ";
 unsigned char MenuTypeLine = 2;
 unsigned char MenuTimeNoMan[]="?? час";
 unsigned char MenuOverlapPulse[]="?? град";
+unsigned char MenuTypePrm = 3;
 
 //переменная отвечающая за вывод на экран Значения параметра или его допустимый диапазон
 unsigned char ValueVsRange = 0;
@@ -296,8 +297,7 @@ void FuncSelecValueInputParam(void)
 				if (SelectValue == 2)	
 					InputSelectValue++;
 			}
-
-			if (MenuLevel == LVL_INFO)
+			else if (MenuLevel == LVL_INFO)
 			{	// меню прошивок
 				if (SelectValue == 3) 
 				{
@@ -305,14 +305,12 @@ void FuncSelecValueInputParam(void)
 					TrParam = 0;
 				}
 			}
-			
-			if (MenuLevel == LVL_CONTROL)
+			else if (MenuLevel == LVL_CONTROL)
 			{
 				TrParam = SelectValue;
 				InputSelectValue = TrValue;
 			}
-			
-			if (MenuLevel == LVL_SETUP_RGM)
+			else if (MenuLevel == LVL_SETUP_RGM)
 			{
 				// при вводе изменения режима без пароля
 				// идет смещение на 1 пункт
@@ -1122,7 +1120,6 @@ static void FuncPressKey(void)
 				MaxDisplayLine = 0;
 				MaxShiftMenu = 1;
 			}break;
-			
 			case 'C':		// Переход на уровень выше
 			{
 				LCDbufClear();
@@ -1132,7 +1129,6 @@ static void FuncPressKey(void)
 				MaxShiftMenu = 2;
 				MaxDisplayLine = 3;
 			}break;
-			
 			case 'U':		// Листание списка вверх
 			{
 				if (ShiftMenu > 0) 
@@ -1143,7 +1139,6 @@ static void FuncPressKey(void)
 					NumberCom = 1;
 				}
 			}break;
-			
 			case 'D':		// Листание списка вниз
 			{
 				if (ShiftMenu < MaxShiftMenu) 
@@ -1154,7 +1149,6 @@ static void FuncPressKey(void)
 					NumberCom = 1;
 				}
 			}break;
-			
 			case '1':		// Переход в пункт "Меню / Установить / Режим"
 			{
 				LCDbufClear();
@@ -1164,7 +1158,6 @@ static void FuncPressKey(void)
 				MaxShiftMenu = 0;
 				MaxDisplayLine = 1;
 			}break;  
-						
 			case '2':		// Переход в пункт "Меню / Установить / Параметры"
 			{
 				LCDbufClear();
@@ -1174,7 +1167,6 @@ static void FuncPressKey(void)
 				MaxShiftMenu = 1;
 				MaxDisplayLine = 3;
 			}break;
-			
 			case '3':		// Переход в пункт "Меню / Установить / Пароль"
 			{
 				if (PressPassword == 2)
@@ -1198,7 +1190,6 @@ static void FuncPressKey(void)
 					Discret = 1; 
 				}
 			}break;
-			
 			case '4': 		// Переход в пункт "Меню / Установить / Тест"
 			{
 				if (CurrentState[2]<0x04) break;   //если есть приемник, и он не в Тест
@@ -1227,7 +1218,6 @@ static void FuncPressKey(void)
 				MaxDisplayLine = 0;
 				MaxShiftMenu = 1;
 			}break;
-			
 			case 'C':		// Переход на уровень выше
 			{
 				LCDbufClear();
@@ -1237,7 +1227,6 @@ static void FuncPressKey(void)
 				MaxShiftMenu = 2;
 				MaxDisplayLine = 3;
 			}break;
-			
 			case 'U':
 			{
 				if (ShiftMenu > 0)
@@ -1246,7 +1235,6 @@ static void FuncPressKey(void)
 					LCD2new = 1;
 				}
 			}break;
-			
 			case 'D':
 			{
 				// 3 - кол-во отображаемых на экране элементов
@@ -1259,13 +1247,11 @@ static void FuncPressKey(void)
 					}
 				}
 			}break;
-			
 			// не используемые кнопки
 			case 'E':
 			case '0':
 			case '#':
 			break;
-			
 			// Нажата цифра от 1 до 9
 			default:
 			{
@@ -1296,7 +1282,7 @@ static void FuncPressKey(void)
 						LCD2new = 1;
 						MenuLevel += 1;
 						ShiftMenu = 0;
-						MaxShiftMenu = 6;
+						MaxShiftMenu = MAX_DEF_PARAM - 1;
 						MaxDisplayLine = 1; 
 						ValueVsRange = false;
 					} 
@@ -1311,7 +1297,7 @@ static void FuncPressKey(void)
 					case 12:	//просмотр парам\приемник	
 					{
 						LCDbufClear();LCD2new=1;ShiftMenu=0;MaxDisplayLine=1;NumberCom=1;
-						MaxShiftMenu = defNumParamPrm - 1;
+						MaxShiftMenu = MAX_PRM_PARAM - 1;
 						MenuLevel += 2;	// 8 and 14
 					}
 					break;
@@ -1324,7 +1310,7 @@ static void FuncPressKey(void)
 					case 12:	//просмотр парам\передатчика	
 					{
 						LCDbufClear();LCD2new=1;ShiftMenu=0;MaxDisplayLine=1;NumberCom=1;
-						MaxShiftMenu = defNumParamPrd - 1;
+						MaxShiftMenu = MAX_PRD_PARAM - 1;
 						MenuLevel += 3;	// 9 and 15
 					}
 					break;
@@ -1384,28 +1370,56 @@ static void FuncPressKey(void)
 			{
 				switch (MenuLevel){
 					case 6:
-					case 19: {LCDbufClear();MenuLevel=2;LCD2new=1;ShiftMenu=0;MaxShiftMenu=2;MaxDisplayLine=3;} break;  //возврат в меню 2-ого уровня
+					case 19: 
+					{
+						LCDbufClear();
+						MenuLevel=2;
+						LCD2new=1;
+						ShiftMenu=0;
+						MaxShiftMenu=2;
+						MaxDisplayLine=3;
+					} break;  //возврат в меню 2-ого уровня
 					case 7:
 					case 8:
 					case 9:
-					case 10:{ //возврат в Просмотр параметров
-						LCDbufClear();MenuLevel=6;LCD2new=1;ShiftMenu=0;NumberCom=1;MaxShiftMenu=1;MaxDisplayLine=3;
+					case 10:	//возврат в Просмотр параметров
+					{ 
+						LCDbufClear();
+						MenuLevel=6;
+						LCD2new=1;
+						ShiftMenu=0;
+						NumberCom=1;
+						MaxShiftMenu=1;
+						MaxDisplayLine=3;
 					}break;
 					case 20:
 					case 11:
-					case 12:  {LCDbufClear();MenuLevel=5;LCD2new=1;ShiftMenu=0; MaxDisplayLine=3;
-					MaxShiftMenu=1;
-					if (CurrentState[2]<0x04) MaxShiftMenu=0;   //если есть приемник, и он не в Тест1
-					if (CurrentState[4]<0x04) MaxShiftMenu=0;  //если есть передатчик, и он не в Тест1
-					if (CurrentState[0]<0x04) MaxShiftMenu=0;
-					} break; //Возврат в Установить
+					case 12:	//Возврат в Установить  
+					{
+						LCDbufClear();MenuLevel=5;LCD2new=1;ShiftMenu=0; MaxDisplayLine=3;
+						MaxShiftMenu=1;
+						if (CurrentState[2]<0x04) MaxShiftMenu=0;   //если есть приемник, и он не в Тест1
+						if (CurrentState[4]<0x04) MaxShiftMenu=0;  //если есть передатчик, и он не в Тест1
+						if (CurrentState[0]<0x04) MaxShiftMenu=0;
+					}break; 	
 					case 13:
 					case 14:
 					case 15:
-					case 16:{ //Возврат в Устанновить\Параметры
-						LCDbufClear();LCD2new=1;MenuLevel=12;ShiftMenu=0;ValueVsRange=0;NumberCom=1;MaxShiftMenu=1;MaxDisplayLine=3;ValueVsRange=false;
+					case 16:	//Возврат в Устанновить\Параметры
+					{ 
+						LCDbufClear();
+						LCD2new=1;
+						MenuLevel=12;
+						ShiftMenu=0;
+						ValueVsRange=0;
+						NumberCom=1;
+						MaxShiftMenu=1;
+						MaxDisplayLine=3;
+						ValueVsRange=false;
 					}break;
-					case 21: Menu_Journal(); break; //возврат в меню Журнал
+					case 21:	//возврат в меню Журнал
+					Menu_Journal(); 
+					break; 
 				}
 			}break;
 			case 'U':
@@ -1532,13 +1546,14 @@ static void FuncPressKey(void)
 						if (CurrentState[0]==0x00){
 							switch(ShiftMenu)
 							{
-								case 0: {WorkRate=2;SelectValue=1;InputSelectValue=0;MaxSelectValue=7;MinSelectValue=0;MassSelectValue=ParamTypeDef;} break; 	
-								case 1: {WorkRate=2;SelectValue=2;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=ParamLineDef;} break; 	
-								case 2: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=99;MinValue=0;InputParameter=8;Discret=1;NumberTransCom=1;}break;
-								case 3: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=18;MinValue=0;InputParameter=9;Discret=1;NumberTransCom=1;} break;
-								case 4: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=54;MinValue=0;InputParameter=10;Discret=2;NumberTransCom=1;}break;
-								case 5: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=27;Discret=1;NumberTransCom=1;} break;
-								case 6: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=28;Discret=1;NumberTransCom=1;} break;
+								case 0: {WorkRate=2;SelectValue=1;InputSelectValue=0;MaxSelectValue=7;MinSelectValue=0;MassSelectValue=ParamTypeDef;} 		break; 	
+								case 1: {WorkRate=2;SelectValue=2;InputSelectValue=0;MaxSelectValue=1;MinSelectValue=0;MassSelectValue=ParamLineDef;} 		break; 	
+								case 2: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=99;MinValue=0;InputParameter=8;Discret=1;NumberTransCom=1;}	break;
+								case 3: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=18;MinValue=0;InputParameter=9;Discret=1;NumberTransCom=1;} 	break;
+								case 4: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=54;MinValue=0;InputParameter=10;Discret=2;NumberTransCom=1;}	break;
+								case 5: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=27;Discret=1;NumberTransCom=1;} 	break;
+								case 6: {WorkRate=1;MaxNumberInputChar=2;ByteShift=0;MaxValue=20;MinValue=0;InputParameter=28;Discret=1;NumberTransCom=1;} 	break;
+								case 7: {WorkRate=2;SelectValue=7;InputSelectValue=0;MaxSelectValue=2;MinSelectValue=0;MassSelectValue=ParamTypePrmDef;}	break;
 							}
 						}
 					}break;
@@ -1758,10 +1773,10 @@ __interrupt void Timer1ovf(void)
 							{
 								if (ShiftMenu < 6)
 									TransDataInf(ShiftMenu + 1, 0x00);
+								else if (ShiftMenu == 6)
+									TransDataInf(0x09, 0x00);
 								else
-								{
-									TransDataInf(0x09,0x00);
-								}
+									TransDataInf(0x07, 0x00);
 							}break; 
 							case LVL_VIEW_PRM:		
 							case LVL_SETUP_PRM:	
@@ -1972,7 +1987,8 @@ __interrupt void Timer1ovf(void)
 }
 
 //вывод на экран неисправностеЙ, предупреждений, состояний в первом меню
-void LCDMenu1(unsigned char NumString,unsigned char Device){
+void LCDMenu1(unsigned char NumString,unsigned char Device)
+{
 	//Device: 1-защита, 2 - ПРМ1, 3 - ПРД, 5 - ПРМ2
 	unsigned int tglobal, temp;
 	unsigned char i;
@@ -2204,9 +2220,9 @@ void LCDwork(void)
 								{
 									LCDprintChar(3, 11, '-');
 									LCDprint(3, 12, 2, MenuVoltageLimit, 1);
-								} 
-								break;
+								}break;
 								case 6: LCDprint(3, 11, 2, MenuRZalarm, 1); break;		
+								case 7: LCDprintf(3, 11, 2, ParamTypePrmDef[MenuTypePrm], 1); break;
 							}
 						}
 						else{
