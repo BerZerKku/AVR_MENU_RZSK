@@ -1818,8 +1818,8 @@ __interrupt void Timer1ovf(void)
 										sArchive.Data[12] = 0;
 										ShiftMenu = 0;
 									}
-									Tr_buf_data_uart[5] = 0;
-									Tr_buf_data_uart[4] = sArchive.CurCount + ShiftMenu;
+									Tr_buf_data_uart[4] = 0;
+									Tr_buf_data_uart[5] = sArchive.CurCount + ShiftMenu;
 									TransDataInf(0xF2 - (sArchive.Dev[sArchive.CurrDev] << 4), 0x02);
 									
 //									Tr_buf_data_uart1[5] = 0;
@@ -1898,7 +1898,8 @@ __interrupt void Timer1ovf(void)
 							break;
 							case LVL_SETUP_GLB:
 							{
-								switch(TrParam){
+								switch(TrParam)
+								{
 									case 5:
 									case 6:
 									case 7:{
@@ -2412,7 +2413,8 @@ void LCDwork(void)
 				{
 					LCDprintf(4,1,2,Menu21e[sArchive.Dev[sArchive.CurrDev]],1); // вывод устройства
 					LCDptinrArchCount(3, sArchive.RecCount, ShiftMenu);
-					if (sArchive.RecCount){  //если в архиве что-то есть, будем выводить записи
+					if (sArchive.RecCount)
+					{  //если в архиве что-то есть, будем выводить записи
 						if (sArchive.Data[12]){  //если данные уже получены
 							//for(char i=0; i<4; i++) LCDprintHEX(3,i*2+1, sArchive.Data[i]);
 							//вывод инф-ии на экран
