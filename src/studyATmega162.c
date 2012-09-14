@@ -546,13 +546,8 @@ void FuncInputDataTime(void)
 				switch(num)
 				{
 				case 0:
-					if (key == '0')
-					{
-						InputDataTime[num++] = key;
-						if (InputDataTime[num] == '0')
-							InputDataTime[num] = '1';
-					} 
-					else if (key < '2')
+					// ввод десятков часа
+					if (key < '2')
 					{
 						InputDataTime[num++] = key;				
 					}
@@ -564,12 +559,8 @@ void FuncInputDataTime(void)
 					}
 					break;
 				case 1:
-					if (key == '0')
-					{
-						if (InputDataTime[num - 1] > '0')
-							InputDataTime[num++] = key;
-					}
-					else if (key < '4')
+					// ввод единиц часа
+					if (key < '4')
 					{
 						InputDataTime[num++] = key;
 					}
@@ -581,26 +572,16 @@ void FuncInputDataTime(void)
 					break;
 				case 3:
 				case 6:
-					if (key == '0')
-					{
-						InputDataTime[num++] = key;
-						if (InputDataTime[num] == '0')
-							InputDataTime[num] = '1';
-					}
-					else if (key < '6') 
+					// ввод десятков минут/секунд
+					if (key < '6') 
 					{
 						InputDataTime[num++] = key;
 					}
 					break;
 				case 4:
 				case 7:
-					if (key == '0')
-					{
-						if (InputDataTime[num - 1] > '0')
-							InputDataTime[num] = key;
-					}
-					else 
-						InputDataTime[num++] = key;
+					// ввод единиц минут/секунд
+					InputDataTime[num++] = key;
 					break;
 				}
 			}
