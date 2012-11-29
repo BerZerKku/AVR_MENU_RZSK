@@ -1911,9 +1911,6 @@ __interrupt void Timer1ovf(void)
 								Tr_buf_data_uart[4] = TrParam;
 								Tr_buf_data_uart[5] = TrValue;
 								TransDataInf(0x7E,2);
-								Tr_buf_data_uart1[4] = TrParam;
-								Tr_buf_data_uart1[5] = TrValue;
-								TransDataInf1(0x7E,2);
 							}break;
 							case LVL_CONTROL:
 							TransDataByte(TrParam, TrValue);

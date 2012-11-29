@@ -286,8 +286,26 @@ __flash unsigned char Menu1GlobalError200[] ="Неиспр.чт. 2RAM ";
 __flash unsigned char Menu1GlobalError400[] ="Установите часы ";
 __flash unsigned char Menu1GlobalError800[] ="Низкое напр.вых.";
 __flash unsigned char Menu1GlobalError1000[]="Высокое напр.вых";
-__flash unsigned __flash char* Menu1GlobalErrorT[]={Menu1GlobalError1, Menu1GlobalError2, Menu1GlobalError4, Menu1GlobalError8, Menu1GlobalError10,UnknownErrorT,UnknownErrorT,UnknownErrorT,
-                                                     Menu1GlobalError100, Menu1GlobalError200,Menu1GlobalError400,Menu1GlobalError800,Menu1GlobalError1000,UnknownErrorT,UnknownErrorT,UnknownErrorT};
+__flash unsigned __flash char *Menu1GlobalErrorT[] = 
+{
+	Menu1GlobalError1, 
+	Menu1GlobalError2, 
+	Menu1GlobalError4, 
+	Menu1GlobalError8, 
+	Menu1GlobalError10,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+    Menu1GlobalError100, 
+	Menu1GlobalError200,
+	Menu1GlobalError400,
+	Menu1GlobalError800,
+	Menu1GlobalError1000,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT
+};
+
 //ошибки Защиты
 __flash unsigned char Menu1PostError1[]   ="Нет блока БСЗ   ";
 __flash unsigned char Menu1PostError2[]   ="Неиспр.верс.БСЗ ";
@@ -298,8 +316,26 @@ __flash unsigned char Menu1PostError200[] ="Неиспр.вход.СТОП";
 __flash unsigned char Menu1PostError800[] ="Неиспр.цепь.ВЫХ ";
 __flash unsigned char Menu1PostError2000[]="Неиспр.зап. ВЫХ ";
 __flash unsigned char Menu1PostError4000[]="Нет сигнала РЗ  ";
-__flash unsigned __flash char* Menu1PostErrorT[]={Menu1PostError1,Menu1PostError2,Menu1PostError4,Menu1PostError8,UnknownErrorT,UnknownErrorT,UnknownErrorT,UnknownErrorT,
-                                                    Menu1PostError100,Menu1PostError200,UnknownErrorT,Menu1PostError800,UnknownErrorT,Menu1PostError2000,Menu1PostError4000,UnknownErrorT};
+__flash unsigned __flash char *Menu1PostErrorT[] = 
+{
+	Menu1PostError1,
+	Menu1PostError2,
+	Menu1PostError4,
+	Menu1PostError8,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+    Menu1PostError100,
+	Menu1PostError200,
+	UnknownErrorT,
+	Menu1PostError800,
+	UnknownErrorT,
+	Menu1PostError2000,
+	Menu1PostError4000,
+	UnknownErrorT
+};
+
 //предупреждения Защиты
 __flash unsigned char Menu1PostWarning1[] ="Низкий уров. РЗ ";
 
@@ -314,19 +350,55 @@ __flash unsigned char Menu1PrmError400[]  ="Неиспр.вкл. КСК ";
 __flash unsigned char Menu1PrmError800[]  ="Неиспр.контр.КСК";
 __flash unsigned char Menu1PrmError1000[] ="Предупр.нет КЧ1 ";
 __flash unsigned char Menu1PrmError8000[] ="Прием блок. Ком.";
-__flash unsigned __flash char* Menu1PrmErrorT[]={Menu1PrmError1,Menu1PrmError2,Menu1PrmError4,Menu1PrmError8,UnknownErrorT,UnknownErrorT,UnknownErrorT,UnknownErrorT,
-                                                    Menu1PrmError100,Menu1PrmError200,Menu1PrmError400,Menu1PrmError800,Menu1PrmError1000,UnknownErrorT,UnknownErrorT,Menu1PrmError8000};
+__flash unsigned __flash char *Menu1PrmErrorT[] = 
+{
+	Menu1PrmError1,
+	Menu1PrmError2,
+	Menu1PrmError4,
+	Menu1PrmError8,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+    Menu1PrmError100,
+	Menu1PrmError200,
+	Menu1PrmError400,
+	Menu1PrmError800,
+	Menu1PrmError1000,
+	UnknownErrorT,
+	UnknownErrorT,
+	Menu1PrmError8000
+};
+
 //предупреждения Приемника
 __flash unsigned char Menu1PrmWarning1[] = "Сниж. уровня ПРМ";
+
 //ошибки Передатчика
 __flash unsigned char Menu1PrdError1[]    ="Нет блока БСК   ";
 __flash unsigned char Menu1PrdError2[]    ="Неиспр.верс.БСК ";
-__flash unsigned char Menu1PrdError100[]  ="Ош.чт. PLIS ПРД ";
+__flash unsigned char Menu1PrdError100[]  ="Неиспр.чт.команд";
 __flash unsigned char Menu1PrdError200[]  ="Неиспр.выкл.Тест";
 __flash unsigned char Menu1PrdError400[]  ="Неиспр.вкл. Тест";
 __flash unsigned char Menu1PrdError800[]  ="Неиспр.вход.КСК ";
-__flash unsigned __flash char* Menu1PrdErrorT[]={Menu1PrdError1,Menu1PrdError2,UnknownErrorT,UnknownErrorT,UnknownErrorT,UnknownErrorT,UnknownErrorT,UnknownErrorT,
-                                                    UnknownErrorT,Menu1PrdError200,Menu1PrdError400,Menu1PrdError800,UnknownErrorT,UnknownErrorT,UnknownErrorT,UnknownErrorT};
+__flash unsigned __flash char *Menu1PrdErrorT[] = 
+{
+	Menu1PrdError1,
+	Menu1PrdError2,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+    Menu1PrdError100,
+	Menu1PrdError200,
+	Menu1PrdError400,
+	Menu1PrdError800,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT,
+	UnknownErrorT
+};
 
 //Тестовый режим 1
 __flash unsigned char Menu20line2test1[]= "Гр1:      Гр2:      ";
