@@ -367,7 +367,7 @@ void FuncInputDataTime(void)
 				TrDataTimeMass[0] = ( (InputDataTime[6] - '0') << 4) + (InputDataTime[7] - '0');
 				
 				// мес€ц, если не правильный, будет 1
-				if (month < 12)
+				if ( (month > 0) && (month <= 12) )
 				{
 					TrDataTimeMass[1] = ( (InputDataTime[3] - '0') << 4) + (InputDataTime[4] - '0');
 				}

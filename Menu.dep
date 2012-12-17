@@ -6,115 +6,78 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\doc\readme_RZSK.txt</file>
-      <file>$PROJ_DIR$\inc\StandartProtocol.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\driverLCD.pbi</file>
-      <file>$PROJ_DIR$\src\drvKeyboard.cpp</file>
-      <file>$PROJ_DIR$\inc\driverLCD.h</file>
-      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-n.r90</file>
-      <file>$PROJ_DIR$\inc\WatchDog.h</file>
-      <file>$PROJ_DIR$\inc\MyDef.h</file>
-      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
-      <file>$PROJ_DIR$\inc\StartSetup.h</file>
-      <file>$PROJ_DIR$\src\WatchDog.c</file>
-      <file>$PROJ_DIR$\Debug\Obj\studyATmega162.pbi</file>
-      <file>$PROJ_DIR$\inc\DataCenter.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\yvals.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\DLib_Product.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\stdint.h</file>
-      <file>$TOOLKIT_DIR$\inc\ina90.h</file>
-      <file>$PROJ_DIR$\src\StartSetup.c</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\xencoding_limits.h</file>
-      <file>$TOOLKIT_DIR$\config\lnkm128s.xcl</file>
-      <file>$PROJ_DIR$\inc\Flash.h</file>
-      <file>$TOOLKIT_DIR$\inc\comp_a90.h</file>
-      <file>$PROJ_DIR$\src\studyATmega162.c</file>
-      <file>$PROJ_DIR$\Debug\Obj\InterfaceS.r90</file>
-      <file>$PROJ_DIR$\inc\InterfaceS.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\ycheck.h</file>
-      <file>$TOOLKIT_DIR$\inc\ioavr.h</file>
       <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-n.h</file>
-      <file>$PROJ_DIR$\src\DataCenter.c</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\inc\inavr.h</file>
-      <file>$PROJ_DIR$\src\driverLCD.c</file>
-      <file>$PROJ_DIR$\Debug\Obj\WatchDog.pbi</file>
-      <file>$PROJ_DIR$\inc\Menu.h</file>
-      <file>$TOOLKIT_DIR$\inc\dlib\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\inc\DataCenter1.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\drvKeyboard.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\StartSetup.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\DataCenter1.r90</file>
-      <file>$PROJ_DIR$\Debug\Obj\drvKeyboard.r90</file>
-      <file>$PROJ_DIR$\Debug\Obj\DataCenter.pbi</file>
-      <file>$PROJ_DIR$\Debug\Exe\Menu.flash.hex</file>
-      <file>$PROJ_DIR$\src\DataCenter1.c</file>
-      <file>$PROJ_DIR$\Debug\Obj\WatchDog.r90</file>
-      <file>$PROJ_DIR$\Debug\Obj\studyATmega162.r90</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\StartSetup.r90</file>
-      <file>$PROJ_DIR$\Debug\Obj\Menu.pbd</file>
-      <file>$PROJ_DIR$\Debug\Obj\driverLCD.r90</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\InterfaceS.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\studyATmega162.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\ioavr.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\yvals.h</file>
       <file>$PROJ_DIR$\Debug\Obj\DataCenter.r90</file>
-      <file>$PROJ_DIR$\Debug\Exe\Menu.hex</file>
-      <file>$PROJ_DIR$\Debug\Obj\DataCenter1.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\iom128.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\DLib_Product.h</file>
       <file>$PROJ_DIR$\Debug\Obj\InterfaceS.pbi</file>
-      <file>$PROJ_DIR$\Debug\List\Menu.map</file>
+      <file>$TOOLKIT_DIR$\inc\comp_a90.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\WatchDog.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\studyATmega162.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\DataCenter1.r90</file>
+      <file>$PROJ_DIR$\inc\DataCenter.h</file>
+      <file>$PROJ_DIR$\src\DataCenter.c</file>
+      <file>$PROJ_DIR$\src\DataCenter1.c</file>
+      <file>$TOOLKIT_DIR$\config\lnkm128s.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\stdint.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dlAVR-3s-ec_mul-n.r90</file>
+      <file>$TOOLKIT_DIR$\inc\ina90.h</file>
+      <file>$PROJ_DIR$\inc\DataCenter1.h</file>
+      <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\driverLCD.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\driverLCD.r90</file>
+      <file>$PROJ_DIR$\inc\driverLCD.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\src\driverLCD.c</file>
+      <file>$PROJ_DIR$\src\drvKeyboard.cpp</file>
       <file>$PROJ_DIR$\src\InterfaceS.c</file>
+      <file>$PROJ_DIR$\src\StartSetup.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\WatchDog.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\DataCenter1.pbi</file>
+      <file>$PROJ_DIR$\Debug\List\Menu.map</file>
+      <file>$PROJ_DIR$\src\studyATmega162.c</file>
+      <file>$PROJ_DIR$\src\WatchDog.c</file>
+      <file>$PROJ_DIR$\doc\readme_RZSK.txt</file>
+      <file>$PROJ_DIR$\Debug\Obj\DataCenter.pbi</file>
+      <file>$PROJ_DIR$\inc\Flash.h</file>
+      <file>$PROJ_DIR$\inc\MyDef.h</file>
+      <file>$PROJ_DIR$\inc\InterfaceS.h</file>
+      <file>$PROJ_DIR$\inc\Menu.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\drvKeyboard.r90</file>
+      <file>$PROJ_DIR$\Debug\Obj\Menu.pbd</file>
+      <file>$PROJ_DIR$\Debug\Exe\Menu.hex</file>
+      <file>$TOOLKIT_DIR$\inc\inavr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\drvKeyboard.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\Menu.flash.hex</file>
+      <file>$PROJ_DIR$\Debug\Obj\StartSetup.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\iom128.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\inc\StandartProtocol.h</file>
+      <file>$PROJ_DIR$\inc\StartSetup.h</file>
+      <file>$PROJ_DIR$\inc\WatchDog.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\StartSetup.r90</file>
     </outputs>
     <file>
-      <name>$PROJ_DIR$\src\drvKeyboard.cpp</name>
+      <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
-          <name>ICCAVR</name>
-          <file> 39</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36</file>
+          <name>XLINK</name>
+          <file> 44 33 47</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 26 52 8 16 30 45 21 7 4 15 25 13 34 27 14 18 29</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 26 52 8 16 30 45 21 7 4 15 25 13 34 14 18 29</file>
-        </tool>
-      </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\src\WatchDog.c</name>
+      <name>$PROJ_DIR$\src\DataCenter.c</name>
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 43</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 32</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 26 52 8 16 30 45 21</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 26 52 8 16 30 45 21</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\src\StartSetup.c</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 46</file>
+          <file> 6</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -124,57 +87,34 @@
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 26 52 8</file>
+          <file> 4 50 21 39 40 25 17 49 5 51 0 7 1 26 20</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 26 52 8</file>
+          <file> 4 50 21 39 40 25 17 49 5 51 7 1 26 20</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\src\studyATmega162.c</name>
+      <name>$PROJ_DIR$\src\DataCenter1.c</name>
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 44</file>
+          <file> 12</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 11</file>
+          <file> 32</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 26 52 8 16 30 45 21 15 25 13 34 27 14 18 29 7 9 24 12 35 4 6 20 33</file>
+          <file> 4 50 21 39 40</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 26 52 8 16 30 45 21 15 25 13 34 14 18 29 7 9 24 12 35 4 6 20 33</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\src\DataCenter.c</name>
-      <outputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 49</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 40</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCAVR</name>
-          <file> 26 52 8 7 24 4 15 25 13 34 27 14 18 29 35</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 26 52 8 7 24 4 15 25 13 34 14 18 29 35</file>
+          <file> 4 50 21 39 40</file>
         </tool>
       </inputs>
     </file>
@@ -183,77 +123,44 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 48</file>
+          <file> 24</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 2</file>
+          <file> 23</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 26 52 8 16 30 45 21 4 15 25 13 34 27 14 18 29</file>
+          <file> 4 50 21 19 45 22 9 25 17 49 5 51 0 7 1 26</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 26 52 8 16 30 45 21 4 15 25 13 34 14 18 29</file>
+          <file> 4 50 21 19 45 22 9 25 17 49 5 51 7 1 26</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 50 54 41</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\src\DataCenter1.c</name>
+      <name>$PROJ_DIR$\src\drvKeyboard.cpp</name>
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 38</file>
+          <file> 42</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 51</file>
+          <file> 46</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 26 52 8 7 24</file>
+          <file> 4 50 21 19 45 22 9 39 25 17 49 5 51 0 7 1 26</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 26 52 8 7 24</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Debug\Obj\Menu.pbd</name>
-      <inputs>
-        <tool>
-          <name>BILINK</name>
-          <file> 40 51 53 37 32 2 36 11</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Debug\Exe\Menu.hex</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 54 41</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 19 49 38 23 46 43 48 39 44 5</file>
+          <file> 4 50 21 19 45 22 9 39 25 17 49 5 51 7 1 26</file>
         </tool>
       </inputs>
     </file>
@@ -262,21 +169,114 @@
       <outputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 23</file>
+          <file> 2</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 53</file>
+          <file> 8</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCAVR</name>
-          <file> 26 52 8 16 30 45 21 7 12 35</file>
+          <file> 4 50 21 19 45 22 9 39 13 20</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 26 52 8 16 30 45 21 7 12 35</file>
+          <file> 4 50 21 19 45 22 9 39 13 20</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\src\StartSetup.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 55</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 48</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 4 50 21</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4 50 21</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\src\studyATmega162.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 11</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 3</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 4 50 21 19 45 22 9 17 49 5 51 0 7 1 26 39 53 40 13 20 25 54 38 41</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4 50 21 19 45 22 9 17 49 5 51 7 1 26 39 53 40 13 20 25 54 38 41</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\src\WatchDog.c</name>
+      <outputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 31</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 10</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCAVR</name>
+          <file> 4 50 21 19 45 22 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4 50 21 19 45 22 9</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Obj\Menu.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 37 32 8 48 10 23 46 3</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\Menu.hex</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 33 47</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 16 6 12 2 55 31 24 42 11 18</file>
         </tool>
       </inputs>
     </file>
