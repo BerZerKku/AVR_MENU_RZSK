@@ -113,10 +113,10 @@ void DataModBus1(unsigned char NumberByte)
                   }
                   else
                   {
-                    if ((Rec_buf_data_uart1[2]==0x72)||(Rec_buf_data_uart1[2]==0x73))
+                    if ((Rec_buf_data_uart1[2]==0x74)||(Rec_buf_data_uart1[2]==0x73))
                     {
 
-                      if (Rec_buf_data_uart1[2]==0x72){
+                      if (Rec_buf_data_uart1[2]==0x74){
                         PassToPC=(ePassword[0]-0x30)*1000+(ePassword[1]-0x30)*100+(ePassword[2]-0x30)*10+(ePassword[3]-0x30);
                         Tr_buf_data_uart1[4]=Hi(PassToPC);
                         Tr_buf_data_uart1[5]=Lo(PassToPC);

@@ -3,7 +3,7 @@
 
 //для двухчастотки
 //версия прошивки, если первый ноль - то убираем
-#define Insertion 0x0130
+#define Insertion 0x0131
 
 //Взять старший байт int
 #define Hi(a) (unsigned char) (a>>8)
