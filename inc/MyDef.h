@@ -3,7 +3,7 @@
 
 //для двухчастотки
 //версия прошивки, если первый ноль - то убираем
-#define Insertion 0x0131
+#define Insertion 0x0132
 
 //Взять старший байт int
 #define Hi(a) (unsigned char) (a>>8)
@@ -77,7 +77,8 @@
 //*100мс , время ожидания запроса с ПК
 #define PC_wait 15
 
-struct strArchive{
+struct strArchive
+{
   unsigned char NumDev; //кол-во устройств
   unsigned char CurrDev;  //выбранное устройство
   unsigned char Dev[5]; //массив номеров устройств: 0 байт нужен для выода инфы на дисплей =0х00 всегда!

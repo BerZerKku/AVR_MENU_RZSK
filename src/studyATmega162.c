@@ -2046,10 +2046,27 @@ void LCDMenu1(unsigned char NumString,unsigned char Device)
 					}
 				}else{//предупреждение устройства
 					temp=(int) (GlobalCurrentState[2+(Device-1)*4]<<8) + GlobalCurrentState[3+(Device-1)*4];  //предупреждениz
-					if ((Device==1)&&(temp==1)) LCDprintf(NumString, 5, 2, Menu1PostWarning1,1);  //1 предупреждение поста
+					if ( (Device==1) && ((temp == 1) || (temp == 2)) )
+					{
+						if (temp == 1)
+						{
+							LCDprintf(NumString, 5, 2, Menu1PostWarning1,1);  //1 предупреждение поста
+						}
+						else if (temp == 2)
+						{
+							LCDprintf(NumString, 5, 2, Menu1PostWarning2,1);  //2 предупреждение поста
+						}
+					}
 					else
-						if ((Device==2)||(Device==5)&&(temp==1)) LCDprintf(NumString, 5, 2, Menu1PrmWarning1,1);  //1 предупреждение прм
-						else{ //если это не ЗАЩИТА(Приемник)педупреждение 0х0001, тьо выведем код
+						if ( ((Device==2)||(Device==5)) && ((temp==1)||(temp==2)) ) 
+						{
+							
+								LCDprintf(NumString, 5, 2, Menu1PrmWarning1,1);  //1 предупреждение прм
+							
+						}
+						else
+						{ 
+							// вывод кода предуреждения
 							LCDprintf(NumString,5,2,Menu1warning,1);
 							FuncClearCharLCD(NumString,13,8);
 							LCDprintf(NumString,13,2,LocalAvar,0);

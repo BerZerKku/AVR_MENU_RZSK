@@ -337,7 +337,8 @@ __flash unsigned __flash char *Menu1PostErrorT[] =
 };
 
 //предупреждения Защиты
-__flash unsigned char Menu1PostWarning1[] ="Низкий уров. РЗ ";
+__flash unsigned char Menu1PostWarning1[] = "Низкий уров. РЗ ";
+__flash unsigned char Menu1PostWarning2[] = "Нет сигнала МАН ";
 
 //ошибки Приемника
 __flash unsigned char Menu1PrmError1[]    ="Нет блока БСК   ";
