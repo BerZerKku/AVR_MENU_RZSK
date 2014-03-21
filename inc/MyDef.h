@@ -1,14 +1,16 @@
 #ifndef __MY_DEF
 #define __MY_DEF
 
+#include <stdint.h>
+
 //для двухчастотки
 //версия прошивки, если первый ноль - то убираем
-#define Insertion 0x0132
+#define Insertion 0x0133
 
 //Взять старший байт int
 #define Hi(a) (unsigned char) (a>>8)
 //Взять младший байт Int
-#define Lo(a) (unsigned char) (a)
+#define Low(a) (unsigned char) (a)
 
 #define uchar unsigned char
 #define uint unsigned int
@@ -76,6 +78,14 @@
 
 //*100мс , время ожидания запроса с ПК
 #define PC_wait 15
+
+#define COR_VOLTAGE 0
+#define COR_CURRENT 1
+
+struct strCorrParam{
+  uint8_t Print[7]; //массив для выода коррекции на экран
+  int16_t Corr;  //текущая коррекция
+};
 
 struct strArchive
 {

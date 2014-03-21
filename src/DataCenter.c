@@ -1,4 +1,4 @@
-#include "ioavr.h"
+#include <ioavr.h>
 #include "MyDef.h"
 #include "InterfaceS.h"
 #include "driverLCD.h"
@@ -113,6 +113,10 @@ extern bool bReadVers; //true - версия была считана, false - ответ не пришел, пр
 extern __flash  unsigned char  Menu61[],Menu62[],Menu63[],Menu64[],Menu62_1[],Menu62_2[];
 extern unsigned char LineInMenu6; //кол-во строк в меню просмотр параметров/ установить параметры
 extern unsigned __flash char  *mMenu6point[]; //массив строк для меню просмотр параметров/ установить параметры
+
+
+
+static void fCorrParam(void);
 
 //функция вычисляет код CRC-16
 //на входе указатель на начало буфера
@@ -606,6 +610,7 @@ void HexToViewHex(unsigned char *Mass, unsigned char StartAddr, unsigned char He
 		Mass[StartAddr + 1] = t2 + 0x30;
 }
 
+extern signed int UlineValue, IlineValue;
 void FMeasureParam(void){
 	unsigned int itmp;
 	if (Rec_buf_data_uart[4]==0x00)
@@ -620,6 +625,7 @@ void FMeasureParam(void){
 		
 		//ток первый
 		itmp=(Rec_buf_data_uart[7]<<8)+Rec_buf_data_uart[8];
+		IlineValue = itmp; 		//значение для вычисления коррекции
 		fIntCodeToChar(Iline2,3,1,1,itmp,1000);
 		HexToViewHex(MeasDop[1], 3, Rec_buf_data_uart[7]);
 		HexToViewHex(MeasDop[1], 5, Rec_buf_data_uart[8]);
@@ -629,10 +635,14 @@ void FMeasureParam(void){
 			Uline[2]=(Rec_buf_data_uart[9]/10)+0x30;
 			Uline[3]=(Rec_buf_data_uart[9]%10)+0x30;
 			Uline[5]=(Rec_buf_data_uart[10]/10)+0x30;
+			//значение для вычисления коррекции
+			UlineValue=((int16_t) Rec_buf_data_uart[9])*10 + (Rec_buf_data_uart[10]/10);  
 		}else{
 			Uline[2] = '?';
 			Uline[3] = '?';
 			Uline[5] = '?';
+			//значение для вычисления коррекции
+			UlineValue = 0;
 		}
 		HexToViewHex(MeasDop[2], 3, Rec_buf_data_uart[9]);
 		HexToViewHex(MeasDop[2], 5, Rec_buf_data_uart[10]);
@@ -879,6 +889,90 @@ void FArchive(void)
 	}
 }
 
+
+extern strCorrParam sCorrParam[];
+
+static void fCorrParam(void){
+	int8_t temp1, temp2;
+	int16_t temp3 = 0;
+	uint8_t step;
+
+	//напряжение
+	temp1 = (int8_t) Rec_buf_data_uart[4];
+	temp2 = (int8_t) Rec_buf_data_uart[5];
+	sCorrParam[COR_VOLTAGE].Corr = 0;
+	if ((temp1 > 99) || (temp1 < -99) || (temp2 > 90) || (temp2 < -90)) {  
+		// вне диапазона
+		sCorrParam[COR_VOLTAGE].Print[0]='?';
+		sCorrParam[COR_VOLTAGE].Print[1]='?';
+		sCorrParam[COR_VOLTAGE].Print[2]=0x00;
+	} else {
+		step = 0;
+		//знак коррекции
+		uint8_t sign = ((temp1|temp2)&0x80) ? '-' : '+';
+		sCorrParam[COR_VOLTAGE].Print[step++] = sign; 
+		
+		// после того как узнали знак коррекции, 
+		// работаем с положительными числами
+		temp1 = (temp1 < 0) ? -temp1 : temp1;
+		temp2 = (temp2 < 0) ? -temp2 : temp2;
+		temp2 /= 10;
+		// если коррекция нулевая, заполним массив сразу
+		if ((temp1 == 0) && (temp2 == 0)) {
+			temp3 = 0;
+			sCorrParam[COR_VOLTAGE].Print[0] = '0';
+			sCorrParam[COR_VOLTAGE].Print[1] = 0x00;
+		} else {
+			temp3 = ((int16_t) temp1)*10 + temp2;
+			temp3 = (sign == '-') ? -temp3 : temp3;
+			sCorrParam[COR_VOLTAGE].Corr = temp3;
+			// если коррекция >= 10В, запишем старший разряд
+			if (temp1 > 9) {
+				sCorrParam[COR_VOLTAGE].Print[step++] = (temp1/10) + '0';
+				temp1 %= 10;
+			}
+			sCorrParam[COR_VOLTAGE].Print[step++] = temp1 + '0';
+			sCorrParam[COR_VOLTAGE].Print[step++] = '.';
+			sCorrParam[COR_VOLTAGE].Print[step++] = temp2 + '0';
+			sCorrParam[COR_VOLTAGE].Print[step++] = 'В';
+			sCorrParam[COR_VOLTAGE].Print[step++] = 0x00;
+		}
+		
+	}
+	// ток
+
+	temp3 = ((int16_t)(Rec_buf_data_uart[6]<<8)) + Rec_buf_data_uart[7];
+	sCorrParam[COR_CURRENT].Corr = 0; 			
+	if ((temp3 > 999) || (temp3 < -999)) {	 		//вне диапазона
+		sCorrParam[COR_CURRENT].Print[0]='?';
+		sCorrParam[COR_CURRENT].Print[1]='?';
+		sCorrParam[COR_CURRENT].Print[2]=0x00;
+	} else {
+		if (temp3 == 0) { 						// нулевая коррекция
+			sCorrParam[COR_CURRENT].Print[0]='0';
+			sCorrParam[COR_CURRENT].Print[1]=0x00;
+		} else {
+			step = 0;
+			sCorrParam[COR_CURRENT].Corr = temp3;
+			sCorrParam[COR_CURRENT].Print[step++] = (temp3 > 0) ? '+' : '-';
+			temp3 = (temp3 < 0) ? -temp3 : temp3;
+			if (temp3 > 99) {
+				sCorrParam[COR_CURRENT].Print[step++]=(temp3 / 100) + '0';
+				temp3 = temp3 % 100;
+			}
+			if (temp3 > 9) {
+				sCorrParam[COR_CURRENT].Print[step++]=(temp3 / 10) + '0';
+				temp3 = temp3 % 10;
+			}
+			sCorrParam[COR_CURRENT].Print[step++] = temp3 + '0';
+			sCorrParam[COR_CURRENT].Print[step++] = 'м';
+			sCorrParam[COR_CURRENT].Print[step++] = 'А';
+			sCorrParam[COR_CURRENT].Print[step++] =0x00;
+			
+		}
+	}
+}
+
 //обработка принятого сообщения
 void DataModBus(unsigned char NumberByte)
 {	
@@ -931,17 +1025,18 @@ void DataModBus(unsigned char NumberByte)
 				{
                 	switch(Rec_buf_data_uart[2])
 					{
-                    	case 0x30:  {FCurrentState();} break; //принято текущее состояние
-                        case 0x31:  {FGlobalCurrentState();} break;  //принято общее текущее состояние
-                        case 0x32:  {FDataTime();} break;  //пришли данные дата/время
-                        case 0x34:  {FMeasureParam();} break; //пришли измеряемые параметры
-                        case 0x36:  //удержание реле команд приемника (общие)
-                        case 0x37:  //удержание реле команд передатчика (общие)
+                    	case 0x30:  {FCurrentState();} break; 			// принято текущее состояние
+                        case 0x31:  {FGlobalCurrentState();} break;  	// принято общее текущее состояние
+                        case 0x32:  {FDataTime();} break;  				// пришли данные дата/время
+						case 0x33: 	{fCorrParam();} break;				// коррекция тока/напряжения
+                        case 0x34:  {FMeasureParam();} break; 			// пришли измеряемые параметры
+                        case 0x36:  									// удержание реле команд приемника (общие)
+                        case 0x37:  									// удержание реле команд передатчика (общие)
 						case 0x39:
                         case 0x3C:
                         case 0x3D:  {FParamGlobal(Rec_buf_data_uart[2]);}break;
-                        case 0x3E:  FTest1(); break; //принято значение Теста
-                        case 0x3F:  VersDevice(); break; //информация об аппарате
+                        case 0x3E:  FTest1(); break; 					// принято значение Теста
+                        case 0x3F:  VersDevice(); break; 				// информация об аппарате
                 	};
              	}break;
                 default:

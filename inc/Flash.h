@@ -102,14 +102,25 @@ __flash unsigned char Menu9Shift2[]="";
 __flash unsigned __flash char* Menu9ParamRange[]={Menu9Shift0, Menu9Shift1, Menu9Shift2, Menu9Shift2};
 
 //Общие параметры
-__flash unsigned char Menu101[]="Удержание реле ПРМ";
-__flash unsigned char Menu102[]="Удержание реле ПРД";
-__flash unsigned char Menu103[]="Время перезапуска";
-__flash unsigned char Menu104[]="Контроль вых.сигнала";
-__flash unsigned char Menu105[]="Порог ПРЕДУПР по КЧ ";
-__flash unsigned char Menu106[]="Умен.усиления 1 кан.";
-#define defNumParamAll 6
-__flash unsigned __flash char* Menu10paramAll[]={Menu101, Menu102, Menu103, Menu104, Menu105, Menu106};
+__flash unsigned char Menu101[] = "Удержание реле ПРМ";
+__flash unsigned char Menu102[] = "Удержание реле ПРД";
+__flash unsigned char Menu103[] = "Время перезапуска";
+__flash unsigned char Menu104[] = "Контроль вых.сигнала";
+__flash unsigned char Menu105[] = "Порог ПРЕДУПР по КЧ ";
+__flash unsigned char Menu106[] = "Умен.усиления 1 кан.";
+__flash unsigned char Menu107[] = "Коррекция напряжения";
+__flash unsigned char Menu108[] = "Коррекция тока";
+#define defNumParamAll 8
+__flash unsigned __flash char* Menu10paramAll[defNumParamAll] = {
+	Menu101, 
+	Menu102, 
+	Menu103, 
+	Menu104, 
+	Menu105, 
+	Menu106,
+	Menu107,
+	Menu108
+};
 
 __flash unsigned char Menu11d[]="ЗАЩ";
 __flash unsigned char Menu11r[]="ПРМ";
@@ -252,9 +263,18 @@ __flash unsigned char Menu16Shift2[]="0..5";
 __flash unsigned char Menu16Shift3[]="вкл/выкл";
 __flash unsigned char Menu16Shift4[]="0..22";
 __flash unsigned char Menu16Shift5[]="0..22";
-__flash unsigned char Menu16Shift6[]="100..1000";
-__flash unsigned char Menu16Shift7[]="0..10";
-__flash unsigned __flash char* Menu16ParamRange[]={Menu16Shift0,Menu16Shift1,Menu16Shift2,Menu16Shift3, Menu16Shift4,Menu16Shift5,Menu16Shift7};
+__flash unsigned char Menu16Shift6[]="-99..99";		// коррекция напряжения
+__flash unsigned char Menu16Shift7[]="0..999";		// коррекция тока
+__flash unsigned __flash char* Menu16ParamRange[defNumParamAll] = {
+	Menu16Shift0,
+	Menu16Shift1,
+	Menu16Shift2,
+	Menu16Shift3, 
+	Menu16Shift4,
+	Menu16Shift5,
+	Menu16Shift6,
+	Menu16Shift7
+};
 
 //Прошивки
 __flash unsigned char Menu19Shift0[]="Прошивка P-USP  ";
